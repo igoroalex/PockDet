@@ -1,0 +1,37 @@
+{
+    "cards": [
+        {
+            "name": "i1",
+            "pile": "i",
+            "time": 0,
+            "picture": "i1.jpg",
+            "daughters": ["i1r"],
+            "limits": [],
+            "rate": 0
+        },
+        {
+            "name": "i1r",
+            "pile": "i",
+            "picture": "i1r.jpg",
+            "daughters": ["i2"]
+        },
+        {
+            "name": "i2",
+            "pile": "i",
+            "picture": "i2.jpg",
+            "daughters": ["i2r"]
+        },
+        {
+            "name": "i2r",
+            "pile": "i",
+            "picture": "i2r.jpg",
+            "daughters": ["i3"]
+        },
+        {
+            "name": "i3",
+            "pile": "i",
+            "picture": "i3.jpg",
+            "daughters": ["m1", "s1"]
+        }
+    ]
+}
