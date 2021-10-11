@@ -1,5 +1,5 @@
 import json
-import pprint
+import webbrowser
 
 
 class User:
@@ -22,9 +22,6 @@ class Deck:
     @property
     def all_cards(self):
         return self.__all_cards
-
-    # def is_card_exist(self, id_card):
-    #     return self.__all_cards.get(id_card)
 
 
 DECK = Deck()
@@ -61,6 +58,8 @@ class Hand:
             self.opened_cards.add(card.id_card)
             self.available_cards.update([_ for _ in card.daughters])
             print(f"Played {card}. Time left {self.time_left}")
+            print(rf"dangerous_ties\{card.picture}")
+            webbrowser.open(rf"dangerous_ties/{card.picture}")
         else:
             print(f"{card} not exist, available cards: {self.available_cards}")
 
