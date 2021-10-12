@@ -6,32 +6,349 @@
             "time": 0,
             "picture": "i1.jpg",
             "daughters": ["i1r"],
-            "limits": [],
+            "next_card": "i1r",
+            "up_time": 2,
+            "police": 1,
             "rate": 0
         },
         {
             "name": "i1r",
-            "pile": "i",
-            "picture": "i1r.jpg",
             "daughters": ["i2"]
         },
         {
             "name": "i2",
-            "pile": "i",
-            "picture": "i2.jpg",
-            "daughters": ["i2r"]
+            "daughters": ["i2r"],
+            "next_card": "i2r"
         },
         {
             "name": "i2r",
-            "pile": "i",
-            "picture": "i2r.jpg",
             "daughters": ["i3"]
         },
         {
             "name": "i3",
-            "pile": "i",
-            "picture": "i3.jpg",
-            "daughters": ["m1", "s1"]
+            "daughters": ["i3r"],
+            "next_card": "i3r"
+        },
+        {
+            "name": "i3r",
+            "daughters": [
+                "m1",
+                "m1u",
+                "s1"
+            ],
+            "next_card": "m1u"
+        },
+        {
+            "name": "s1",
+            "daughters": ["h1", "s4", "s2"]
+        },
+        {
+            "name": "s2",
+            "time": 1,
+            "daughters": ["s3"]
+        },
+        {
+            "name": "s3",
+            "daughters": ["h7"],
+            "next_card": "p1",
+            "up_time": 2
+        },
+        {
+            "name": "s4",
+            "daughters": ["s5"]
+        },
+        {
+            "name": "s5",
+            "time": 1,
+            "up_time": 5
+        },
+        {
+            "name": "s6",
+            "time": 2,
+            "daughters": ["e1"]
+        },
+        {
+            "name": "s7",
+            "time": 2
+        },
+        {
+            "name": "s8",
+            "time": 2
+        },
+        {
+            "name": "s9",
+            "time": 2
+        },
+        {
+            "name": "s10",
+            "time": 2
+        },
+        {
+            "name": "c1",
+            "time": 2
+        },
+        {
+            "name": "c2",
+            "time": 2
+        },
+        {
+            "name": "c3",
+            "time": 2,
+            "daughters": ["f7", "e8"]
+        },
+        {
+            "name": "c4",
+            "time": 2,
+            "daughters": ["s8"]
+        },
+        {
+            "name": "c5",
+            "time": 2,
+            "daughters": ["c6"]
+        },
+        {
+            "name": "c6",
+            "time": 1,
+            "daughters": ["e10", "c7", "c8"]
+        },
+        {
+            "name": "c7",
+            "time": 1
+        },
+        {
+            "name": "c8",
+            "daughters": ["c9"],
+            "next_card": "c9"
+        },
+        {
+            "name": "c9",
+            "time": 1,
+            "police": 1
+        },
+        {
+            "name": "c10",
+            "time": 1
+        },
+        {
+            "name": "h1",
+            "time": 1,
+            "daughters": ["h2", "h3"]
+        },
+        {
+            "name": "h2",
+            "time": 1,
+            "police": 1,
+            "up_time": 4,
+            "next_card": "p3"
+        },
+        {
+            "name": "h3",
+            "time": 1,
+            "daughters": ["h4", "h8"]
+        },
+        {
+            "name": "h4",
+            "time": 1,
+            "daughters": ["h5", "h6", "c5"]
+        },
+        {
+            "name": "h5"
+        },
+        {
+            "name": "h6"
+        },
+        {
+            "name": "h7",
+            "time": 1,
+            "daughters": ["f4", "h10", "e6", "s10", "c2"]
+        },
+        {
+            "name": "h8",
+            "time": 1,
+            "daughters": ["e1", "s6", "h9", "c1"]
+        },
+        {
+            "name": "h9",
+            "time": 1,
+            "daughters": ["f1", "e1", "c4"]
+        },
+        {
+            "name": "h10",
+            "time": 1,
+            "daughters": ["e8", "c3"]
+        },
+        {
+            "name": "f1",
+            "time": 2,
+            "daughters": ["f2"]
+        },
+        {
+            "name": "f2",
+            "time": 1,
+            "daughters": ["f3"]
+        },
+        {
+            "name": "f3",
+            "time": 1
+        },
+        {
+            "name": "f4",
+            "time": 1,
+            "daughters": ["f6", "f5"],
+            "up_time": 22
+        },
+        {
+            "name": "f5",
+            "time": 2,
+            "police": 1,
+            "next_card": "p4"
+        },
+        {
+            "name": "f6"
+        },
+        {
+            "name": "f7",
+            "time": 2
+        },
+        {
+            "name": "e1",
+            "time": 2,
+            "daughters": ["f1", "e2", "e5"]
+        },
+        {
+            "name": "e2",
+            "daughters": ["e3"],
+            "police": 1
+        },
+        {
+            "name": "e3",
+            "daughters": ["h7", "e4"]
+        },
+        {
+            "name": "e4",
+            "time": 1,
+            "police": 1,
+            "next_card": "p4"
+        },
+        {
+            "name": "e5",
+            "time": 1
+        },
+        {
+            "name": "e6",
+            "time": 2,
+            "daughters": ["e5", "e7"]
+        },
+        {
+            "name": "e7",
+            "time": 1,
+            "daughters": ["s9"],
+            "next_card": "p4"
+        },
+        {
+            "name": "e8",
+            "time": 2,
+            "daughters": ["e9"]
+        },
+        {
+            "name": "e9",
+            "time": 1
+        },
+        {
+            "name": "e10",
+            "time": 1,
+            "daughters": ["с10"]
+        },
+        {
+            "name": "m1",
+            "daughters": ["m2", "m3", "m4", "m5", "m6"]
+        },
+        {
+            "name": "m2",
+            "daughters": ["m1", "m10"],
+            "rate": 5
+        },
+        {
+            "name": "m3",
+            "daughters": ["m7", "m8", "m9"]
+        },
+        {
+            "name": "m4",
+            "daughters": ["m1", "m10"],
+            "rate": 7
+        },
+        {
+            "name": "m5",
+            "daughters": ["m1", "m10"],
+            "rate": 15
+        },
+        {
+            "name": "m6",
+            "daughters": ["m10"],
+            "rate": 9
+        },
+        {
+            "name": "m7",
+            "daughters": ["m10"],
+            "next_card": "m10",
+            "rate": 100
+        },
+        {
+            "name": "m8",
+            "daughters": ["m10"],
+            "rate": 65
+        },
+        {
+            "name": "m9",
+            "daughters": ["m10"],
+            "rate": 70
+        },
+        {
+            "name": "m10",
+            "daughters": ["p7"],
+            "next_card": "p7"
+        },
+        {
+            "name": "p1"
+        },
+        {
+            "name": "p2",
+            "time": 3
+        },
+        {
+            "name": "p3",
+            "daughters": ["s7"]
+        },
+        {
+            "name": "p4"
+        },
+        {
+            "name": "p5",
+            "time": 1
+        },
+        {
+            "name": "p6",
+            "time": 2,
+            "daughters": ["m1"],
+            "next_card": "m1"
+        },
+        {
+            "name": "p7",
+            "daughters": ["p8"],
+            "next_card": "p8"
+        },
+        {
+            "name": "p8",
+            "daughters": ["p9"],
+            "next_card": "p9"
+        },
+        {
+            "name": "p9",
+            "daughters": ["p10"],
+            "next_card": "p10"
+        },
+        {
+            "name": "p10"
         }
     ]
 }
