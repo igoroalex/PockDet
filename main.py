@@ -1,5 +1,6 @@
 import json
 import webbrowser
+from typing import Final
 
 
 class User:
@@ -14,7 +15,7 @@ class Deck:
     def __init__(self):
         with open("dangerous_ties.json", "r") as file:
             data = json.load(file)
-        self.__all_cards = {card["id_card"]: card for card in data["cards"]}
+        self.__all_cards = data
 
     def __str__(self):
         return f"{self.__all_cards}"
@@ -24,23 +25,23 @@ class Deck:
         return self.__all_cards
 
 
-DECK = Deck()
+DECK: Final = Deck()
 
 
 class Card:
-    @classmethod
-    def get_card(cls, id_card: str):
-        data_card = {
-            "id_card": "i1",
-            "time": 0,
-            "daughters": [],
-            "next_card": "",
-            "up_time": 0,
-            "police": 0,
-            "rate": 0,
-        }
-        data_card.update(DECK.all_cards.get(id_card, {}))
-        return data_card
+    def __init__(self, id_card: str):
+        data_card = DECK.all_cards.get(id_card, {})
+        self.id_card = data_card.get("id_card", "")
+        self.time = data_card.get("time", 0)
+        self.daughters = data_card.get("daughters", [])
+        self.next_card = data_card.get("next_card", "")
+        self.up_time = data_card.get("up_time", 0)
+        self.police = data_card.get("police", 0)
+        self.rate = data_card.get("rate", 0)
+
+    def show_card(self):
+        print(f"Played {self}.")
+        webbrowser.open(rf"dangerous_ties/{self.id_card}.jpg")
 
 
 class Hand:
@@ -57,36 +58,32 @@ class Hand:
         return self.available_cards - self.opened_cards
 
     def want_card(self, id_card):
-        card = Card.get_card(id_card)
+        card = Card(id_card)
 
-        if card["id_card"] in self.opened_cards:
-            self.show_card(card)
+        if card.id_card in self.opened_cards:
+            card.show_card()
             return
 
-        if card["id_card"] not in self.available_cards:
+        if card.id_card not in self.available_cards:
             print(f"{card} not available, your next cards: {self.next_cards()}")
             return
 
         self.play_card(card)
 
-        if card["police"]:
-            card["next_card"] = self.police_cards.pop()
-            self.available_cards.add(card["next_card"])
+        if card.police:
+            card.next_card = self.police_cards.pop()
+            self.available_cards.add(card.next_card)
 
-        if card["next_card"]:
-            self.want_card(card["next_card"])
+        if card.next_card:
+            self.want_card(card.next_card)
 
-    def show_card(self, card):
-        print(f"Played {card}. Time left {self.time_left}, police {self.police}")
-        webbrowser.open(rf"dangerous_ties/{card['id_card']}.jpg")
+    def play_card(self, card: Card):
+        self.time_left += card.time
+        self.police += card.police
+        self.opened_cards.add(card.id_card)
+        self.available_cards.update([_ for _ in card.daughters])
 
-    def play_card(self, card):
-        self.time_left += card["time"]
-        self.police += card["police"]
-        self.opened_cards.add(card["id_card"])
-        self.available_cards.update([_ for _ in card["daughters"]])
-
-        self.show_card(card)
+        card.show_card()
 
 
 if __name__ == "__main__":
