@@ -31,6 +31,7 @@ DECK: Final = Deck()
 class Card:
     def __init__(self, id_card: str):
         data_card = DECK.all_cards.get(id_card, {})
+
         self.id_card = data_card.get("id_card", "")
         self.time = data_card.get("time", 0)
         self.daughters = data_card.get("daughters", [])
@@ -38,6 +39,9 @@ class Card:
         self.up_time = data_card.get("up_time", 0)
         self.police = data_card.get("police", 0)
         self.rate = data_card.get("rate", 0)
+
+    def __str__(self):
+        return f"{self.id_card=}, {self.time=}, {self.daughters=}, {self.next_card=}"
 
     def show_card(self):
         print(f"Played {self}.")
@@ -47,7 +51,7 @@ class Card:
 class Hand:
     """уже сыгранные карты"""
 
-    def __init__(self, first_card):
+    def __init__(self, first_card: str):
         self.opened_cards = set()
         self.available_cards = {first_card}
         self.time_left = 0
@@ -57,25 +61,22 @@ class Hand:
     def next_cards(self):
         return self.available_cards - self.opened_cards
 
-    def want_card(self, id_card):
-        card = Card(id_card)
-
+    def check_card(self, card: Card):
         if card.id_card in self.opened_cards:
             card.show_card()
-            return
+            return False
 
         if card.id_card not in self.available_cards:
             print(f"{card} not available, your next cards: {self.next_cards()}")
-            return
+            return False
+        return True
 
-        self.play_card(card)
+    def want_card(self, id_card: str):
+        card = Card(id_card)
 
-        if card.police:
-            card.next_card = self.police_cards.pop()
-            self.available_cards.add(card.next_card)
-
-        if card.next_card:
-            self.want_card(card.next_card)
+        if self.check_card(card):
+            self.play_card(card)
+        return
 
     def play_card(self, card: Card):
         self.time_left += card.time
@@ -85,10 +86,15 @@ class Hand:
 
         card.show_card()
 
+        if card.police:
+            card.next_card = self.police_cards.pop()
+            self.available_cards.add(card.next_card)
+
+        if card.next_card:
+            self.play_card(Card(card.next_card))
+
 
 if __name__ == "__main__":
-
-    # print(DECK)
 
     user_name = "goro"
     current_user = User(user_name)
@@ -99,7 +105,6 @@ if __name__ == "__main__":
     while True:
         hand.want_card(wanted_card)
 
-        # print(hand.opened_cards)
         print(hand.available_cards)
 
         wanted_card = input("wanted card:").lower()
