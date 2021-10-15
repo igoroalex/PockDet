@@ -1,6 +1,6 @@
 import json
 import webbrowser
-from typing import Final
+from typing import List, Set, Final
 
 
 class User:
@@ -34,11 +34,11 @@ class Card:
 
         self.id_card: str = data_card.get("id_card", "")
         self.time: int = data_card.get("time", 0)
-        self.daughters: list = data_card.get("daughters", [])
+        self.daughters: List[str] = data_card.get("daughters", [])
         self.next_card: str = data_card.get("next_card", "")
         self.police: int = data_card.get("police", 0)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f"{self.id_card=}, {self.time=}, {self.daughters=}, {self.next_card=}"
 
     def show_card(self):
@@ -50,11 +50,11 @@ class Hand:
     """уже сыгранные карты"""
 
     def __init__(self, first_card: str):
-        self.opened_cards: set = set()
-        self.available_cards: set = {first_card}
+        self.opened_cards: Set[str] = set()
+        self.available_cards: Set[str] = {first_card}
         self.time_left: int = 0
         self.police: int = 0
-        self.police_cards: list = ["p6", "p5", "p4", "p3", "p2", "p1"]
+        self.police_cards: List[str] = ["p6", "p5", "p4", "p3", "p2", "p1"]
         self.last_card: str = ""
         self.jail: str = ""
         self.rate: int = 0
@@ -104,9 +104,9 @@ class Hand:
             self.available_cards.add(card.next_card)
 
         if self.jail == "p5":
-            self.available_cards = {_ for _ in self.available_cards if _[0] != "c"}
+            self.available_cards = {_ for _ in self.available_cards if not _.startswith('c')}
 
-        if self.jail == "p5" and card.id_card[0] == "c":
+        if self.jail == "p5" and card.id_card.startswith('c'):
             print("Теперь вы не можете пользоваться помощью друзей в полиции")
             return False
 
@@ -142,7 +142,7 @@ class Hand:
                 [
                     20
                     for _ in self.opened_cards
-                    if _ in ["m2", "m4", "m5", "m6", "m8", "m9"]
+                    if _ in ("m2", "m4", "m5", "m6", "m8", "m9")
                 ]
             )
             self.rate -= self.time_left
@@ -154,7 +154,7 @@ class Hand:
                 [
                     20
                     for _ in self.opened_cards
-                    if _[0] == "m" and _ not in ["m1", "m3", "m8"]
+                    if _.startswith('m') and _ not in ("m1", "m3", "m8")
                 ]
             )
             self.rate -= self.time_left
@@ -167,7 +167,7 @@ class Hand:
                 [
                     20
                     for _ in self.opened_cards
-                    if _[0] == "m" and _ not in ["m1", "m3", "m9"]
+                    if _.startswith('m') and _ not in ("m1", "m3", "m9")
                 ]
             )
             self.rate -= self.time_left
@@ -195,13 +195,12 @@ class Hand:
             if card.next_card:
                 self.play_card(Card(card.next_card))
 
-        return
-
     def play_card(self, card: Card):
         self.time_left += card.time
         self.police += card.police
         self.opened_cards.add(card.id_card)
-        self.available_cards.update([_ for _ in card.daughters])
+        # self.available_cards.update([_ for _ in card.daughters])
+        self.available_cards.update(card.daughters)
         self.last_card = card.id_card
 
         card.show_card()
