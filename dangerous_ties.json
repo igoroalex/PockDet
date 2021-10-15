@@ -43,7 +43,7 @@
     "f6": {"id_card": "f6"},
     "f7": {"id_card": "f7", "time": 2},
     "e1": {"id_card": "e1", "time": 2, "daughters": ["f1", "e2", "e5"]},
-    "e2": {"id_card": "e2", "daughters": ["e3"], "police": 1},
+    "e2": {"id_card": "e2", "daughters": [], "police": 1},
     "e3": {"id_card": "e3", "daughters": ["h7", "e4"]},
     "e4": {"id_card": "e4", "time": 1, "police": 1},
     "e5": {"id_card": "e5", "time": 1},
