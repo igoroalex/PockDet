@@ -34,7 +34,7 @@ class Card:
 
         self.id_card = data_card.get("id_card", "")
         self.time = data_card.get("time", 0)
-        self.daughters = data_card.get("daughters", [])
+        self.daughters: list = data_card.get("daughters", [])
         self.next_card = data_card.get("next_card", "")
         self.up_time = data_card.get("up_time", 0)
         self.police = data_card.get("police", 0)
@@ -59,6 +59,7 @@ class Hand:
         self.police_cards = ["p6", "p5", "p4", "p3", "p2", "p1"]
         self.last_card = ""
         self.jail = ""
+        self.rate = 0
 
     def next_cards(self) -> set:
         return self.available_cards - self.opened_cards
@@ -113,6 +114,55 @@ class Hand:
 
         if card.id_card == "p5":
             self.jail = "p5"
+
+        if card.id_card == "p6":
+            self.jail = "p6"
+
+        if card.id_card == "m2" and self.jail == "p6":
+            self.rate += 5
+            card.next_card = "m10"
+            card.daughters.append(card.next_card)
+
+        if card.id_card == "m4" and self.jail == "p6":
+            self.rate += 7
+            card.next_card = "m10"
+            card.daughters.append(card.next_card)
+
+        if card.id_card == "m5" and self.jail == "p6":
+            self.rate += 15
+            card.next_card = "m10"
+            card.daughters.append(card.next_card)
+
+        if card.id_card == "m6" and self.jail == "p6":
+            self.rate += 9
+            card.next_card = "m10"
+            card.daughters.append(card.next_card)
+
+        if card.id_card == "m7":
+            self.rate += 100
+            self.rate -= sum([20 for _ in self.opened_cards if _ in ["m2", "m4", "m5", "m6", "m8", "m9"]])
+            self.rate -= self.time_left
+            self.rate -= 10 if self.jail == "p6" else 0
+
+        if card.id_card == "m8" and self.jail == "p6":
+            self.rate += 65
+            self.rate -= sum([20 for _ in self.opened_cards if _[0] == "m" and _ not in ["m1", "m3", "m8"]])
+            self.rate -= self.time_left
+            card.next_card = "m10"
+            card.daughters.append(card.next_card)
+
+        if card.id_card == "m9" and self.jail == "p6":
+            self.rate += 70
+            self.rate -= sum([20 for _ in self.opened_cards if _[0] == "m" and _ not in ["m1", "m3", "m9"]])
+            self.rate -= self.time_left
+            card.next_card = "m10"
+            card.daughters.append(card.next_card)
+
+        if card.id_card == "m10":
+            print(f"Ваш результат: {self.rate}")
+
+        if card.id_card == "p10":
+            print("!!!Поздравляю!!!")
 
         if card.police:
             card.next_card = self.police_cards.pop()
