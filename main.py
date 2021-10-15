@@ -58,6 +58,7 @@ class Hand:
         self.police = 0
         self.police_cards = ["p6", "p5", "p4", "p3", "p2", "p1"]
         self.last_card = ""
+        self.jail = ""
 
     def next_cards(self) -> set:
         return self.available_cards - self.opened_cards
@@ -102,6 +103,16 @@ class Hand:
             card.police = 0
             card.next_card = "e3"
             self.available_cards.add(card.next_card)
+
+        if self.jail == "p5":
+            self.available_cards = {_ for _ in self.available_cards if _[0] != "c"}
+
+        if self.jail == "p5" and card.id_card[0] == "c":
+            print("Теперь вы не можете пользоваться помощью друзей в полиции")
+            return False
+
+        if card.id_card == "p5":
+            self.jail = "p5"
 
         if card.police:
             card.next_card = self.police_cards.pop()
