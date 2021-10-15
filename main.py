@@ -92,6 +92,11 @@ class Hand:
             card.next_card = "f6"
             self.available_cards.add(card.next_card)
 
+        if card.id_card == "e2" and "h6" in self.opened_cards:
+            card.police = 0
+            card.next_card = "e3"
+            self.available_cards.add(card.next_card)
+
         if card.police:
             card.next_card = self.police_cards.pop()
             self.available_cards.add(card.next_card)
