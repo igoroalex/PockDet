@@ -40,7 +40,7 @@ class Card:
         self.police = data_card.get("police", 0)
         self.rate = data_card.get("rate", 0)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.id_card=}, {self.time=}, {self.daughters=}, {self.next_card=}"
 
     def show_card(self):
@@ -59,10 +59,10 @@ class Hand:
         self.police_cards = ["p6", "p5", "p4", "p3", "p2", "p1"]
         self.last_card = ""
 
-    def next_cards(self):
+    def next_cards(self) -> set:
         return self.available_cards - self.opened_cards
 
-    def check_card(self, card: Card):
+    def check_card(self, card: Card) -> bool:
 
         # ordinary conditions
         if card.id_card in self.opened_cards:
@@ -74,12 +74,16 @@ class Hand:
             return False
 
         # exceptional conditions
-        if card.id_card == "s3":
-            if self.time_left > 2:
-                print(
-                    "Момент упущен. Полиция уже приехала и не допускает посторонних людей"
-                )
-                return False
+        if card.id_card == "s3" and self.time_left > 2:
+            print(
+                "Момент упущен. Полиция уже приехала и не допускает посторонних людей"
+            )
+            return False
+
+        if card.id_card == "s4" and self.time_left > 5:
+            card.daughters = []
+            print("Соседи разошлись. не успели")
+            return False
 
         if card.id_card == "c9" and self.last_card != "c8":
             print("Возможность подслушать упущена. Не стоило видимо уходить")
@@ -88,7 +92,9 @@ class Hand:
         if card.id_card == "h2" and self.time_left <= 4:
             card.police = 0
 
-        if card.id_card == "f4" and ((14 <= self.time_left <= 22) or (38 <= self.time_left <= 46)):
+        if card.id_card == "f4" and (
+            (14 <= self.time_left <= 22) or (38 <= self.time_left <= 46)
+        ):
             card.next_card = "f6"
             self.available_cards.add(card.next_card)
 
@@ -108,6 +114,10 @@ class Hand:
 
         if self.check_card(card):
             self.play_card(card)
+
+            if card.next_card:
+                self.play_card(Card(card.next_card))
+
         return
 
     def play_card(self, card: Card):
@@ -118,9 +128,6 @@ class Hand:
         self.last_card = card.id_card
 
         card.show_card()
-
-        if card.next_card:
-            self.play_card(Card(card.next_card))
 
 
 if __name__ == "__main__":
