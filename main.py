@@ -57,11 +57,14 @@ class Hand:
         self.time_left = 0
         self.police = 0
         self.police_cards = ["p6", "p5", "p4", "p3", "p2", "p1"]
+        self.last_card = ""
 
     def next_cards(self):
         return self.available_cards - self.opened_cards
 
     def check_card(self, card: Card):
+
+        # ordinary conditions
         if card.id_card in self.opened_cards:
             card.show_card()
             return False
@@ -69,6 +72,30 @@ class Hand:
         if card.id_card not in self.available_cards:
             print(f"{card} not available, your next cards: {self.next_cards()}")
             return False
+
+        # exceptional conditions
+        if card.id_card == "s3":
+            if self.time_left > 2:
+                print(
+                    "Момент упущен. Полиция уже приехала и не допускает посторонних людей"
+                )
+                return False
+
+        if card.id_card == "c9" and self.last_card != "c8":
+            print("Возможность подслушать упущена. Не стоило видимо уходить")
+            return False
+
+        if card.id_card == "h2" and self.time_left <= 4:
+            card.police = 0
+
+        if (14 <= self.time_left <= 22) or (38 <= self.time_left <= 46):
+            card.next_card = "f6"
+            self.available_cards.add(card.next_card)
+
+        if card.police:
+            card.next_card = self.police_cards.pop()
+            self.available_cards.add(card.next_card)
+
         return True
 
     def want_card(self, id_card: str):
@@ -83,12 +110,9 @@ class Hand:
         self.police += card.police
         self.opened_cards.add(card.id_card)
         self.available_cards.update([_ for _ in card.daughters])
+        self.last_card = card.id_card
 
         card.show_card()
-
-        if card.police:
-            card.next_card = self.police_cards.pop()
-            self.available_cards.add(card.next_card)
 
         if card.next_card:
             self.play_card(Card(card.next_card))
