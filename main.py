@@ -88,7 +88,7 @@ class Hand:
         if card.id_card == "h2" and self.time_left <= 4:
             card.police = 0
 
-        if (14 <= self.time_left <= 22) or (38 <= self.time_left <= 46):
+        if card.id_card == "f4" and ((14 <= self.time_left <= 22) or (38 <= self.time_left <= 46)):
             card.next_card = "f6"
             self.available_cards.add(card.next_card)
 
