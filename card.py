@@ -1,7 +1,9 @@
+from typing import List, Final
 import webbrowser
-from typing import List
+from deck import Deck
 
-from main import DECK
+
+DECK: Final = Deck()
 
 
 class Card:

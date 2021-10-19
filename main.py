@@ -1,6 +1,3 @@
-from typing import Final
-
-from deck import Deck
 from hand import Hand
 
 
@@ -8,8 +5,6 @@ class User:
     def __init__(self, id_t: str):
         self.id: str = id_t
 
-
-DECK: Final = Deck()
 
 if __name__ == "__main__":
 
