@@ -20,5 +20,5 @@ class Card:
         return f"{self.id_card=}, {self.time=}, {self.daughters=}, {self.next_card=}"
 
     def show_card(self):
-        print(f"Played {self}.")
+        # print(f"Played {self}.")
         webbrowser.open(rf"dangerous_ties/{self.id_card}.jpg")

@@ -16,6 +16,14 @@ class Hand:
         self.jail: str = ""
         self.rate: int = 0
 
+    def __str__(self):
+        return f"{self.time_left=}, " \
+               f"{self.police=}, " \
+               f"{self.police_cards}, " \
+               f"{self.last_card}, " \
+               f"{self.jail}, " \
+               f"{self.available_cards}"
+
     def next_cards(self) -> set:
         return self.available_cards - self.opened_cards
 
@@ -158,7 +166,6 @@ class Hand:
         self.time_left += card.time
         self.police += card.police
         self.opened_cards.add(card.id_card)
-        # self.available_cards.update([_ for _ in card.daughters])
         self.available_cards.update(card.daughters)
         self.last_card = card.id_card
 

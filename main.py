@@ -17,7 +17,7 @@ if __name__ == "__main__":
     while True:
         hand.want_card(wanted_card)
 
-        print(hand.available_cards)
+        print(hand)
 
         wanted_card = input("wanted card:").lower()
         if wanted_card == "exit":
