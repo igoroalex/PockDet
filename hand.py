@@ -1,28 +1,58 @@
-from typing import Set, List
+import json
+from typing import Set, List, Final
+import psycopg
+from psycopg.rows import dict_row
 
 from card import Card
+
+FIRST_CARD: Final = "i1"
 
 
 class Hand:
     """уже сыгранные карты"""
 
-    def __init__(self, first_card: str):
-        self.opened_cards: Set[str] = set()
-        self.available_cards: Set[str] = {first_card}
-        self.time_left: int = 0
-        self.police: int = 0
-        self.police_cards: List[str] = ["p6", "p5", "p4", "p3", "p2", "p1"]
-        self.last_card: str = ""
-        self.jail: str = ""
-        self.rate: int = 0
+    def __init__(self, user_name: str, data_user: dict = None):
+
+        if data_user:
+            self.user_name: str = user_name
+            self.opened_cards: Set[str] = set(json.loads(data_user["opened_cards"]))
+            self.available_cards: Set[str] = set(
+                json.loads(data_user["available_cards"])
+            )
+            self.time_left: int = data_user["time_left"]
+            self.police: int = data_user["police"]
+            self.police_cards: List[str] = json.loads(data_user["police_cards"])
+            self.last_card: str = data_user["last_card"]
+            self.jail: str = data_user["jail"]
+            self.rate: int = data_user["rate"]
+        else:
+
+            self.user_name: str = user_name
+            self.opened_cards: Set[str] = set()
+            self.available_cards: Set[str] = {FIRST_CARD}
+            self.time_left: int = 0
+            self.police: int = 0
+            self.police_cards: List[str] = ["p6", "p5", "p4", "p3", "p2", "p1"]
+            self.last_card: str = ""
+            self.jail: str = ""
+            self.rate: int = 0
 
     def __str__(self):
-        return f"{self.time_left=}, " \
-               f"{self.police=}, " \
-               f"{self.police_cards}, " \
-               f"{self.last_card}, " \
-               f"{self.jail}, " \
-               f"{self.available_cards}"
+        return (
+            f"{self.time_left=}, "
+            f"{self.police=}, "
+            f"{self.police_cards}, "
+            f"{self.last_card}, "
+            f"{self.jail}, "
+            f"{self.available_cards}"
+        )
+
+    @classmethod
+    def play_first(cls, user_name: str):
+        hand = Hand(user_name)
+        hand.want_card(FIRST_CARD)
+
+        return hand
 
     def next_cards(self) -> set:
         return self.available_cards - self.opened_cards
@@ -170,3 +200,97 @@ class Hand:
         self.last_card = card.id_card
 
         card.show_card()
+
+        save_hand(self)
+
+
+def get_data_hand(user_name: str) -> dict_row:
+    conn = psycopg.connect(conninfo="postgresql://postgres:789456@localhost:5432/test1")
+
+    try:
+        with conn:
+            with conn.cursor(row_factory=dict_row) as cur:
+                cur.execute("SELECT * FROM hands WHERE user_name = %s;", (user_name,))
+                data_sql = cur.fetchall()
+    finally:
+        conn.close()
+    return data_sql
+
+
+def get_hand(user_name: str) -> Hand:
+    data_sql = get_data_hand(user_name)
+    hand = Hand.play_first(user_name) if not data_sql else Hand(user_name, data_sql[0])
+    return hand
+
+
+def save_db(hand: Hand):
+    conn = psycopg.connect(conninfo="postgresql://postgres:789456@localhost:5432/test1")
+
+    try:
+        with conn:
+            with conn.cursor(row_factory=dict_row) as cur:
+                cur.execute(
+                    """INSERT INTO hands VALUES (%(user_name)s, 
+                                                    %(opened_cards)s, 
+                                                    %(available_cards)s, 
+                                                    %(time_left)s, 
+                                                    %(police)s, 
+                                                    %(police_cards)s, 
+                                                    %(last_card)s, 
+                                                    %(jail)s, 
+                                                    %(rate)s);""",
+                    {
+                        "user_name": hand.user_name,
+                        "opened_cards": json.dumps(list(hand.opened_cards)),
+                        "available_cards": json.dumps(list(hand.available_cards)),
+                        "time_left": hand.time_left,
+                        "police": hand.police,
+                        "police_cards": json.dumps(list(hand.police_cards)),
+                        "last_card": hand.last_card,
+                        "jail": hand.jail,
+                        "rate": hand.rate,
+                    },
+                )
+                conn.commit()
+    finally:
+        conn.close()
+
+
+def update_db(hand: Hand):
+    conn = psycopg.connect(conninfo="postgresql://postgres:789456@localhost:5432/test1")
+
+    try:
+        with conn:
+            with conn.cursor(row_factory=dict_row) as cur:
+                cur.execute(
+                    """UPDATE hands SET user_name = %(user_name)s, 
+                                opened_cards = %(opened_cards)s, 
+                                available_cards = %(available_cards)s, 
+                                time_left = %(time_left)s, 
+                                police = %(police)s, 
+                                police_cards = %(police_cards)s, 
+                                last_card = %(last_card)s, 
+                                jail = %(jail)s, 
+                                rate = %(rate)s
+                            WHERE user_name = %(user_name)s;""",
+                    {
+                        "user_name": hand.user_name,
+                        "opened_cards": json.dumps(list(hand.opened_cards)),
+                        "available_cards": json.dumps(list(hand.available_cards)),
+                        "time_left": hand.time_left,
+                        "police": hand.police,
+                        "police_cards": json.dumps(list(hand.police_cards)),
+                        "last_card": hand.last_card,
+                        "jail": hand.jail,
+                        "rate": hand.rate,
+                    },
+                )
+                conn.commit()
+    finally:
+        conn.close()
+
+
+def save_hand(hand: Hand):
+
+    data_sql = get_data_hand(hand.user_name)
+    save_db(hand) if not data_sql else update_db(hand)
