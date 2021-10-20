@@ -4,6 +4,7 @@ import psycopg
 from psycopg.rows import dict_row
 
 from card import Card
+from config import CONNINFO
 
 FIRST_CARD: Final = "i1"
 
@@ -205,7 +206,7 @@ class Hand:
 
 
 def get_data_hand(user_name: str) -> dict_row:
-    conn = psycopg.connect(conninfo="postgresql://postgres:789456@localhost:5432/test1")
+    conn = psycopg.connect(conninfo=CONNINFO)
 
     try:
         with conn:
@@ -224,7 +225,7 @@ def get_hand(user_name: str) -> Hand:
 
 
 def save_db(hand: Hand):
-    conn = psycopg.connect(conninfo="postgresql://postgres:789456@localhost:5432/test1")
+    conn = psycopg.connect(conninfo=CONNINFO)
 
     try:
         with conn:
@@ -257,7 +258,7 @@ def save_db(hand: Hand):
 
 
 def update_db(hand: Hand):
-    conn = psycopg.connect(conninfo="postgresql://postgres:789456@localhost:5432/test1")
+    conn = psycopg.connect(conninfo=CONNINFO)
 
     try:
         with conn:

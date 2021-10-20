@@ -1,4 +1,4 @@
-from hand import Hand, get_hand
+from hand import get_hand
 
 
 class User:
@@ -10,8 +10,6 @@ if __name__ == "__main__":
 
     user_name = "goro2"
     current_user = User(user_name)
-
-    # hand = Hand.play_first(user_name)
 
     while 1:
 
