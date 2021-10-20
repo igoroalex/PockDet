@@ -1,4 +1,4 @@
-from hand import Hand
+from hand import Hand, get_hand
 
 
 class User:
@@ -8,17 +8,19 @@ class User:
 
 if __name__ == "__main__":
 
-    user_name = "goro"
+    user_name = "goro2"
     current_user = User(user_name)
 
-    wanted_card = "i1"
-    hand = Hand(wanted_card)
+    # hand = Hand.play_first(user_name)
 
-    while True:
-        hand.want_card(wanted_card)
+    while 1:
+
+        hand = get_hand(user_name)
 
         print(hand)
 
         wanted_card = input("wanted card:").lower()
         if wanted_card == "exit":
             break
+
+        hand.want_card(wanted_card)
