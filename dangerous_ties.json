@@ -22,7 +22,7 @@
     "c5": {"id_card": "c5", "time": 2, "daughters": ["c6"]},
     "c6": {"id_card": "c6", "time": 1, "daughters": ["e10", "c7", "c8"]},
     "c7": {"id_card": "c7", "time": 1},
-    "c8": {"id_card": "c8", "daughters": ["c9"], "next_card": "c9"},
+    "c8": {"id_card": "c8", "daughters": ["c9"]},
     "c9": {"id_card": "c9", "time": 1, "police": 1},
     "c10": {"id_card": "c10", "time": 1},
     "h1": {"id_card": "h1", "time": 1, "daughters": ["h2", "h3"]},
