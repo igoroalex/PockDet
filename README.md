@@ -10,7 +10,7 @@ PockDect - карточная настольная игра-детектив, г
 Изначально игра построена на команду из нескольких человек, но в данном случае это соло игра, так что по контексту принимает это во внимание.
 После старта игры, правила описываются в первых картах. Продвинуться дальше в расследовании просто ввести название карты латиницей (например: s3, f1).
 
-used psycopg (https://www.psycopg.org/psycopg3/docs/basic/install.html), PostgreSQL (https://www.postgresql.org/download/)
+used Python 3.9, psycopg (https://www.psycopg.org/psycopg3/docs/basic/install.html), PostgreSQL (https://www.postgresql.org/download/)
 
 example config.py:
 
