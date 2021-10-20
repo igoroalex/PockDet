@@ -51,7 +51,7 @@
     "e7": {"id_card": "e7", "time": 1, "daughters": ["s9"], "police": 1},
     "e8": {"id_card": "e8", "time": 2, "daughters": ["e9"]},
     "e9": {"id_card": "e9", "time": 1},
-    "e10": {"id_card": "e10", "time": 1, "daughters": ["\u044110"]},
+    "e10": {"id_card": "e10", "time": 1, "daughters": ["c10"]},
     "m1": {"id_card": "m1", "daughters": ["m2", "m3", "m4", "m5", "m6"]},
     "m2": {"id_card": "m2", "daughters": ["m1"]},
     "m3": {"id_card": "m3", "daughters": ["m7", "m8", "m9"]},
