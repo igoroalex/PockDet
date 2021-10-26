@@ -9,7 +9,7 @@
     "s2": {"id_card": "s2", "time": 1, "daughters": ["s3"]},
     "s3": {"id_card": "s3", "daughters": ["h7"], "police": 1},
     "s4": {"id_card": "s4", "daughters": ["s5"]},
-    "s5": {"id_card": "s5", "time": 1, "up_time": 5},
+    "s5": {"id_card": "s5", "time": 1},
     "s6": {"id_card": "s6", "time": 2, "daughters": ["e1"]},
     "s7": {"id_card": "s7", "time": 2},
     "s8": {"id_card": "s8", "time": 2},
