@@ -1,19 +1,18 @@
-from hand import get_hand
+from hand import Hand
 
 
 class User:
-    def __init__(self, id_t: str):
-        self.id: str = id_t
+    def __init__(self, user_name: str):
+        self.user_name: str = user_name
 
 
 if __name__ == "__main__":
 
-    user_name = "goro2"
-    current_user = User(user_name)
+    current_user = User(input("your name:"))
 
     while 1:
 
-        hand = get_hand(user_name)
+        hand = Hand.get_hand(current_user.user_name)
 
         print(hand)
 
