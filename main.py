@@ -1,4 +1,4 @@
-from hand import Hand
+from teleAPI import start_tele_bot
 
 
 class User:
@@ -8,16 +8,5 @@ class User:
 
 if __name__ == "__main__":
 
-    current_user = User(input("your name:"))
+    start_tele_bot()
 
-    while 1:
-
-        hand = Hand.get_hand(current_user.user_name)
-
-        print(hand)
-
-        wanted_card = input("wanted card:").lower()
-        if wanted_card == "exit":
-            break
-
-        hand.want_card(wanted_card)
