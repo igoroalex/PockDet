@@ -1,7 +1,7 @@
 import json
 from typing import Set, List, Final
 
-from card import Card
+from card import Card, Answer
 from requestsSQL import get_data_hand, save_hand
 
 FIRST_CARD: Final = "i1"
@@ -56,7 +56,7 @@ class Hand:
         }
 
         hand = Hand(pattern_hand)
-        hand.want_card(FIRST_CARD)
+        hand.answer(FIRST_CARD)
 
         return hand
 
@@ -82,6 +82,42 @@ class Hand:
     def next_cards(self) -> set:
         return self.available_cards - self.opened_cards
 
+    def answer(self, id_card: str) -> Answer:
+        card = Card.get_card(id_card)
+        return self.want_card(card)
+
+    def want_card(self, card: Card) -> Answer:
+        if self.show_opened(card):
+            return Answer(picture=card.picture())
+
+        if not self.available(card):
+            return Answer(
+                notice=f"Карта {card.id_card} не доступна. Эти карты Вы еще не открывали {self.next_cards()}"
+            )
+
+        if not card.check(self):
+            return card.answer
+
+        if self.in_jail(card):
+            return Answer(
+                notice=f"Теперь вы не можете пользоваться помощью друзей в полиции"
+            )
+
+        card.looking_police(self)
+
+        answer = Answer()
+        self.play(card, answer)
+        if card.next_card:
+            self.play(Card.get_card(card.next_card), answer)
+
+        return answer
+
+    def show_opened(self, card: Card) -> bool:
+        return card.id_card in self.opened_cards
+
+    def available(self, card: Card) -> bool:
+        return card.id_card in self.available_cards
+
     def in_jail(self, card):
         if self.jail == "p5":
             self.available_cards = {
@@ -89,33 +125,10 @@ class Hand:
             }
 
         if self.jail in ("p5", "p6") and card.id_card.startswith("c"):
-            print("Теперь вы не можете пользоваться помощью друзей в полиции")
             return True
         return False
 
-    def want_card(self, id_card: str):
-        card = Card.get_card(id_card)
-
-        if card.show_opened(self):
-            return
-
-        if not card.is_available(self):
-            return
-
-        if not card.check_card(self):
-            return
-
-        if self.in_jail(card):
-            return
-
-        card.looking_police(self)
-
-        self.play_card(card)
-
-        if card.next_card:
-            self.play_card(Card.get_card(card.next_card))
-
-    def play_card(self, card: Card):
+    def play(self, card: Card, answer: Answer):
 
         self.time_left += card.time
         self.police += card.police
@@ -123,6 +136,6 @@ class Hand:
         self.available_cards.update(card.daughters)
         self.last_card = card.id_card
 
-        card.show_card()
-
         save_hand(self)
+
+        answer.pictures.append(card.picture())

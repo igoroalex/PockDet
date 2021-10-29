@@ -6,6 +6,12 @@ from deck import Deck
 DECK: Final = Deck()
 
 
+class Answer:
+    def __init__(self, picture: str = "", notice: str = ""):
+        self.pictures: list = [picture] if picture else []
+        self.notice: str = notice
+
+
 class Card:
     def __init__(self, id_card: str):
         data_card = DECK.all_cards.get(id_card, {})
@@ -15,6 +21,7 @@ class Card:
         self.daughters: List[str] = data_card.get("daughters", [])
         self.next_card: str = data_card.get("next_card", "")
         self.police: int = data_card.get("police", 0)
+        self.answer: Answer = Answer()
 
     def __str__(self):
         return f"{self.id_card=}, {self.time=}, {self.daughters=}, {self.next_card=}"
@@ -45,63 +52,56 @@ class Card:
     def show_card(self):
         webbrowser.open(rf"dangerous_ties/{self.id_card}.jpg")
 
-    def show_opened(self, hand) -> bool:
-        if self.id_card in hand.opened_cards:
-            self.show_card()
-            return True
-        return False
-
-    def is_available(self, hand) -> bool:
-        if self.id_card not in hand.available_cards:
-            print(f"{self} not available, your next cards: {hand.next_cards()}")
-            return False
-        return True
+    def picture(self):
+        return rf"dangerous_ties/{self.id_card}.jpg"
 
     def looking_police(self, hand):
         if self.police:
             self.next_card = hand.police_cards.pop()
             hand.available_cards.add(self.next_card)
 
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         return True
 
 
 class CardS3(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         if hand.time_left > 2:
-            print(
-                "Момент упущен. Полиция уже приехала и не допускает посторонних людей"
+            self.answer = Answer(
+                notice="Момент упущен. Полиция уже приехала и не допускает посторонних людей"
             )
             return False
         return True
 
 
 class CardS4(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         if hand.time_left > 5:
-            print("Соседи разошлись. не успели")
+            self.answer = Answer(notice="Соседи разошлись. не успели(((")
             self.daughters = []
             return False
         return True
 
 
 class CardC9(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         if hand.last_card != "c8":
-            print("Возможность подслушать упущена. Не стоило видимо уходить")
+            self.answer = Answer(
+                notice="Возможность подслушать упущена. Не стоило видимо уходить"
+            )
             return False
         return True
 
 
 class CardH2(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         if hand.time_left <= 4:
             self.police = 0
         return True
 
 
 class CardF4(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         if (14 <= hand.time_left <= 22) or (38 <= hand.time_left <= 46):
             self.next_card = "f6"
             hand.available_cards.add(self.next_card)
@@ -109,7 +109,7 @@ class CardF4(Card):
 
 
 class CardE2(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         if "h6" in hand.opened_cards:
             self.police = 0
             self.next_card = "e3"
@@ -118,19 +118,19 @@ class CardE2(Card):
 
 
 class CardP5(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         hand.jail = "p5"
         return True
 
 
 class CardP6(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         hand.jail = "p6"
         return True
 
 
 class CardM2(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         if hand.jail == "p6":
             hand.rate += 5
             self.next_card = "m10"
@@ -139,7 +139,7 @@ class CardM2(Card):
 
 
 class CardM4(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         if hand.jail == "p6":
             hand.rate += 7
             self.next_card = "m10"
@@ -148,7 +148,7 @@ class CardM4(Card):
 
 
 class CardM5(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         if hand.jail == "p6":
             hand.rate += 15
             self.next_card = "m10"
@@ -157,7 +157,7 @@ class CardM5(Card):
 
 
 class CardM6(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         if hand.jail == "p6":
             hand.rate += 9
             self.next_card = "m10"
@@ -166,7 +166,7 @@ class CardM6(Card):
 
 
 class CardM7(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         hand.rate += 100
         hand.rate -= sum(
             [20 for _ in hand.opened_cards if _ in ("m2", "m4", "m5", "m6", "m8", "m9")]
@@ -177,7 +177,7 @@ class CardM7(Card):
 
 
 class CardM8(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         hand.rate += 65
         hand.rate -= sum(
             [
@@ -193,7 +193,7 @@ class CardM8(Card):
 
 
 class CardM9(Card):
-    def check_card(self, hand) -> bool:
+    def check(self, hand) -> bool:
         hand.rate += 70
         hand.rate -= sum(
             [
@@ -209,12 +209,12 @@ class CardM9(Card):
 
 
 class CardM10(Card):
-    def check_card(self, hand) -> bool:
-        print(f"Ваш результат: {hand.rate}")
+    def check(self, hand) -> bool:
+        self.answer = Answer(notice=f"Ваш результат: {hand.rate}")
         return True
 
 
 class CardP10(Card):
-    def check_card(self, hand) -> bool:
-        print("!!!Поздравляю!!!")
+    def check(self, hand) -> bool:
+        self.answer = Answer(notice="!!!Поздравляю!!!")
         return True
