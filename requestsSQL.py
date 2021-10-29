@@ -6,6 +6,12 @@ from psycopg.rows import dict_row
 from config import CONNINFO
 
 
+def save_hand(hand):
+
+    data_sql = get_data_hand(hand.user_name)
+    save_db(hand) if not data_sql else update_db(hand)
+
+
 def db_fetchall(request: str, args_request: dict) -> dict_row:
     conn = psycopg.connect(conninfo=CONNINFO)
 
@@ -87,9 +93,3 @@ def update_db(hand):
             "rate": hand.rate,
         },
     )
-
-
-def save_hand(hand):
-
-    data_sql = get_data_hand(hand.user_name)
-    save_db(hand) if not data_sql else update_db(hand)
