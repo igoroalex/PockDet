@@ -8,8 +8,8 @@ def start(update, context):
     with open("greetings.txt", "r") as f:
         greetings = f.read()
 
-    update.message.reply_text(greetings)
-    update.message.reply_text("/start_game")
+    reply_text(update, greetings)
+    reply_text(update, "/start_game")
 
 
 def id_user(chat):
@@ -18,23 +18,23 @@ def id_user(chat):
 
 def help_game(update, context):
     hand = Hand.get_hand(id_user(update.message.chat))
-    update.message.reply_text(f"your next cards: {hand.next_cards()}")
+    reply_text(update, f"your next cards: {hand.next_cards()}")
 
 
 def error(update, context):
-    update.message.reply_text("an error occured")
+    reply_text(update, "an error occured")
 
 
 def unknown(update, context):
-    update.message.reply_text("Sorry, I didn't understand that command.")
+    reply_text(update, "Sorry, I didn't understand that command.")
 
 
 def my_user_name(update, context):
-    update.message.reply_text(id_user(update.message.chat))
+    reply_text(update, id_user(update.message.chat))
 
 
 def start_game(update, context):
-    update.message.reply_text("Начнем расследование")
+    reply_text(update, "Начнем расследование")
 
     hand = Hand.get_hand(id_user(update.message.chat))
     show_answer(update, hand.answer(DECK.first_card()))
@@ -49,12 +49,12 @@ def restart(update, context):
 
 def time_left(update, context):
     hand = Hand.get_hand(id_user(update.message.chat))
-    update.message.reply_text(f"прошло время: {hand.time_left}")
+    reply_text(update, f"прошло время: {hand.time_left}")
 
 
 def next_cards(update, context):
     hand = Hand.get_hand(id_user(update.message.chat))
-    update.message.reply_text(f"your next cards: {hand.next_cards()}")
+    reply_text(update, f"your next cards: {hand.next_cards()}")
 
 
 def text(update, context):
@@ -69,12 +69,16 @@ def show_picture(update, answer: Answer):
 
 def show_notice(update, answer: Answer):
     if answer.notice:
-        update.message.reply_text(answer.notice)
+        reply_text(update, answer.notice)
 
 
 def show_answer(update, answer: Answer):
     show_picture(update, answer)
     show_notice(update, answer)
+
+
+def reply_text(update, text_answer: str):
+    update.message.reply_text(text_answer)
 
 
 def start_tele_bot():

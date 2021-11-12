@@ -34,9 +34,9 @@ class Hand:
     def get_hand(cls, user_name: str):
         data_sql = get_data_hand(user_name)
         return (
-            cls.zero_hand(user_name)
-            if not data_sql
-            else cls.old_hand(user_name, data_sql[0])
+            cls.old_hand(user_name, data_sql[0])
+            if data_sql
+            else cls.zero_hand(user_name)
         )
 
     @classmethod
