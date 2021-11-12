@@ -1,15 +1,10 @@
 from typing import List, Final
 import webbrowser
 from deck import Deck
+from teleAPI import Answer
 
 
 DECK: Final = Deck()
-
-
-class Answer:
-    def __init__(self, picture: str = "", notice: str = ""):
-        self.pictures: list = [picture] if picture else []
-        self.notice: str = notice
 
 
 class Card:

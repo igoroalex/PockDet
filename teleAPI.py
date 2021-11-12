@@ -1,7 +1,13 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from config import TOKEN
-from hand import Hand, Answer, DECK
+from hand import Hand, DECK
 from requestsSQL import delete_hand
+
+
+class Answer:
+    def __init__(self, picture: str = "", notice: str = ""):
+        self.pictures: list = [picture] if picture else []
+        self.notice: str = notice
 
 
 def start(update, context):
@@ -26,7 +32,7 @@ def help_game(update, context):
 
 
 def error(update, context):
-    reply_text(update, "an error occured")
+    reply_text(update, "an error occurred")
 
 
 def unknown(update, context):
