@@ -5,9 +5,9 @@ from requestsSQL import delete_hand
 
 
 class Answer:
-    def __init__(self, picture: str = "", notice: str = ""):
+    def __init__(self, picture: str = "", message: str = ""):
         self.pictures: list = [picture] if picture else []
-        self.notice: str = notice
+        self.message: str = message
 
 
 def start(update, context):
@@ -77,19 +77,19 @@ def text(update, context):
     show_answer(update, hand.answer(update.message.text))
 
 
-def show_picture(update, answer: Answer):
-    for picture in answer.pictures:
+def show_picture(update, pictures: list):
+    for picture in pictures:
         update.message.reply_photo(open(picture, "rb"))
 
 
-def show_notice(update, answer: Answer):
-    if answer.notice:
-        reply_text(update, answer.notice)
+def show_notice(update, answer_message: str):
+    if answer_message:
+        reply_text(update, answer_message)
 
 
 def show_answer(update, answer: Answer):
-    show_picture(update, answer)
-    show_notice(update, answer)
+    show_picture(update, answer.pictures)
+    show_notice(update, answer.message)
 
 
 def reply_text(update, text_answer: str):

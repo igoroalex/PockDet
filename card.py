@@ -74,7 +74,7 @@ class CardS3(Card):
 
     def notice(self) -> Answer:
         return Answer(
-            notice="Момент упущен. Полиция уже приехала и не допускает посторонних людей"
+            message="Момент упущен. Полиция уже приехала и не допускает посторонних людей"
         )
 
 
@@ -86,7 +86,7 @@ class CardS4(Card):
         return True
 
     def notice(self) -> Answer:
-        return Answer(notice="Соседи разошлись. не успели(((")
+        return Answer(message="Соседи разошлись. не успели(((")
 
 
 class CardC9(Card):
@@ -94,7 +94,7 @@ class CardC9(Card):
         return hand.last_card == "c8"
 
     def notice(self) -> Answer:
-        return Answer(notice="Возможность подслушать упущена. Не стоило видимо уходить")
+        return Answer(message="Возможность подслушать упущена. Не стоило видимо уходить")
 
 
 class CardH2(Card):

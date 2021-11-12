@@ -78,7 +78,7 @@ class Hand:
     def answer(self, id_card: str) -> Answer:
         if not self.available(id_card):
             return Answer(
-                notice=f"Карта {id_card} не доступна. Эти карты Вы еще не открывали {self.next_cards()}"
+                message=f"Карта {id_card} не доступна. Эти карты Вы еще не открывали {self.next_cards()}"
             )
 
         card = Card.get_card(id_card)
@@ -87,7 +87,7 @@ class Hand:
             return Answer(picture=card.picture())
 
         if card.help_police(self):
-            return Answer(notice=f"Вы не можете пользоваться помощью друзей в полиции")
+            return Answer(message=f"Вы не можете пользоваться помощью друзей в полиции")
 
         if not card.check(self):
             return card.notice()
