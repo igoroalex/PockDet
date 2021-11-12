@@ -1,6 +1,6 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from config import TOKEN
-from hand import Hand, Answer
+from hand import Hand, Answer, DECK
 from requestsSQL import delete_hand
 
 
@@ -40,9 +40,10 @@ def start_game(update, context):
 
     hand: Hand = Hand.get_hand(id_user(update.message.chat))
 
-    answer: Answer = hand.answer("i1")
+    # answer: Answer = hand.answer("i1")
 
-    show_notice(update, answer) if answer.notice else show_picture(update, answer)
+    # show_notice(update, answer) if answer.notice else show_picture(update, answer)
+    show_answer(update, hand.answer(DECK.first_card()))
 
 
 def restart(update, context):
@@ -73,8 +74,7 @@ def text(update, context):
 
     answer: Answer = hand.answer(update.message.text)
 
-    show_picture(update, answer)
-    show_notice(update, answer)
+    show_answer(update, answer)
 
 
 def show_picture(update, answer: Answer):
@@ -85,6 +85,11 @@ def show_picture(update, answer: Answer):
 def show_notice(update, answer: Answer):
     if answer.notice:
         update.message.reply_text(answer.notice)
+
+
+def show_answer(update, answer: Answer):
+    show_picture(update, answer)
+    show_notice(update, answer)
 
 
 def start_tele_bot():

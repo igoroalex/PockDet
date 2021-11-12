@@ -1,14 +1,12 @@
 import json
-from typing import Set, List, Final
+from typing import Set, List
 
-from card import Card, Answer
+from card import Card, Answer, DECK
 from requestsSQL import get_data_hand, save_hand
-
-FIRST_CARD: Final = "i1"
 
 
 class Hand:
-    """уже сыгранные карты"""
+    """Hand - player's data in game"""
 
     def __init__(self, pattern_hand: dict):
 
@@ -46,10 +44,10 @@ class Hand:
         pattern_hand = {
             "user_name": user_name,
             "opened_cards": set(),
-            "available_cards": {FIRST_CARD},
+            "available_cards": {DECK.first_card()},
             "time_left": 0,
             "police": 0,
-            "police_cards": ["p6", "p5", "p4", "p3", "p2", "p1"],
+            "police_cards": DECK.police_cards(),
             "last_card": "",
             "jail": "",
             "rate": 0,

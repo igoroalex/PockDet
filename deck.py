@@ -16,3 +16,11 @@ class Deck:
     @property
     def all_cards(self):
         return self.__all_cards
+
+    @staticmethod
+    def first_card():
+        return "i1"
+
+    @staticmethod
+    def police_cards():
+        return ["p6", "p5", "p4", "p3", "p2", "p1"]

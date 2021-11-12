@@ -13,6 +13,8 @@ class Answer:
 
 
 class Card:
+    """Initialization of card from deck with all info and check conditions via hand"""
+
     def __init__(self, id_card: str):
         data_card = DECK.all_cards.get(id_card, {})
 
@@ -28,6 +30,7 @@ class Card:
 
     @staticmethod
     def get_card(id_card: str):
+        """Get card by id, but exists especial conditions for some cards"""
         special_cards = {
             "s3": CardS3,
             "s4": CardS4,
@@ -50,7 +53,7 @@ class Card:
         return special_cards.get(id_card, Card)(id_card)
 
     def show_card(self):
-        webbrowser.open(rf"dangerous_ties/{self.id_card}.jpg")
+        webbrowser.open(self.picture())
 
     def picture(self):
         return rf"dangerous_ties/{self.id_card}.jpg"
