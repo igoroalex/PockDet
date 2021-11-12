@@ -23,7 +23,6 @@ class Card:
         self.daughters: List[str] = data_card.get("daughters", [])
         self.next_card: str = data_card.get("next_card", "")
         self.police: int = data_card.get("police", 0)
-        self.answer: Answer = Answer()
 
     def __str__(self):
         return f"{self.id_card=}, {self.time=}, {self.daughters=}, {self.next_card=}"
@@ -61,34 +60,37 @@ class Card:
     def check(self, hand) -> bool:
         return True
 
+    def notice(self) -> Answer:
+        return Answer(notice="Карта не прошла проверки")
+
 
 class CardS3(Card):
     def check(self, hand) -> bool:
-        if hand.time_left > 2:
-            self.answer = Answer(
-                notice="Момент упущен. Полиция уже приехала и не допускает посторонних людей"
-            )
-            return False
-        return True
+        return hand.time_left <= 2
+
+    def notice(self) -> Answer:
+        return Answer(
+            notice="Момент упущен. Полиция уже приехала и не допускает посторонних людей"
+        )
 
 
 class CardS4(Card):
     def check(self, hand) -> bool:
         if hand.time_left > 5:
-            self.answer = Answer(notice="Соседи разошлись. не успели(((")
             self.daughters = []
             return False
         return True
 
+    def notice(self) -> Answer:
+        return Answer(notice="Соседи разошлись. не успели(((")
+
 
 class CardC9(Card):
     def check(self, hand) -> bool:
-        if hand.last_card != "c8":
-            self.answer = Answer(
-                notice="Возможность подслушать упущена. Не стоило видимо уходить"
-            )
-            return False
-        return True
+        return hand.last_card == "c8"
+
+    def notice(self) -> Answer:
+        return Answer(notice="Возможность подслушать упущена. Не стоило видимо уходить")
 
 
 class CardH2(Card):
@@ -218,11 +220,11 @@ class CardM9(Card):
 
 class CardM10(Card):
     def check(self, hand) -> bool:
-        self.answer = Answer(notice=f"Ваш результат: {hand.rate}")
+        # self.answer = Answer(notice=f"Ваш результат: {hand.rate}")
         return True
 
 
 class CardP10(Card):
     def check(self, hand) -> bool:
-        self.answer = Answer(notice="!!!Поздравляю!!!")
+        # self.answer = Answer(notice="!!!Поздравляю!!!")
         return True

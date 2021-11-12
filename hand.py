@@ -56,7 +56,7 @@ class Hand:
         return Hand(pattern_hand)
 
     @staticmethod
-    def old_hand(cls, user_name: str, data_user: dict):
+    def old_hand(user_name: str, data_user: dict):
 
         pattern_hand = {
             "user_name": user_name,
@@ -82,9 +82,6 @@ class Hand:
             )
 
         card: Card = Card.get_card(id_card)
-        return self.want_card(card)
-
-    def want_card(self, card: Card) -> Answer:
 
         if self.look_police_help(card):
             return Answer(notice=f"Вы не можете пользоваться помощью друзей в полиции")
@@ -93,7 +90,7 @@ class Hand:
             return Answer(picture=card.picture())
 
         if not card.check(self):
-            return card.answer
+            return card.notice()
 
         answer: Answer = Answer()
 
