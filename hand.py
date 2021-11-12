@@ -39,8 +39,8 @@ class Hand:
             else cls.zero_hand(user_name)
         )
 
-    @classmethod
-    def zero_hand(cls, user_name: str):
+    @staticmethod
+    def zero_hand(user_name: str):
         pattern_hand = {
             "user_name": user_name,
             "opened_cards": set(),
@@ -55,7 +55,7 @@ class Hand:
 
         return Hand(pattern_hand)
 
-    @classmethod
+    @staticmethod
     def old_hand(cls, user_name: str, data_user: dict):
 
         pattern_hand = {

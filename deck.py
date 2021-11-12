@@ -6,7 +6,9 @@ class Deck:
     записать данные всех карт из json в базу данных"""
 
     def __init__(self):
-        with open("dangerous_ties.json", "r") as file:
+        self.name = "dangerous_ties"
+
+        with open(f"{self.name}.json", "r") as file:
             data = json.load(file)
         self.__all_cards = data
 

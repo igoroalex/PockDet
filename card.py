@@ -56,7 +56,7 @@ class Card:
         webbrowser.open(self.picture())
 
     def picture(self):
-        return rf"dangerous_ties/{self.id_card}.jpg"
+        return rf"{DECK.name}/{self.id_card}.jpg"
 
     def check(self, hand) -> bool:
         return True
