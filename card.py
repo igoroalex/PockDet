@@ -1,8 +1,7 @@
 from typing import List, Final
 import webbrowser
 from deck import Deck
-from teleAPI import Answer
-
+from teleanswer import Answer
 
 DECK: Final = Deck()
 

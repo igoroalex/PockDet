@@ -2,12 +2,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from config import TOKEN
 from hand import Hand, DECK
 from requestsSQL import delete_hand
-
-
-class Answer:
-    def __init__(self, picture: str = "", message: str = ""):
-        self.pictures: list = [picture] if picture else []
-        self.message: str = message
+from teleanswer import Answer
 
 
 def start(update, context):

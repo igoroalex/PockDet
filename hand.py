@@ -1,7 +1,8 @@
 import json
 from typing import Set, List
 
-from card import Card, Answer, DECK
+from card import Card, DECK
+from teleanswer import Answer
 from requestsSQL import get_data_hand, save_hand
 
 
