@@ -93,3 +93,13 @@ def update_db(hand):
             "rate": hand.rate,
         },
     )
+
+
+def delete_hand(hand):
+    db_commit(
+        """DELETE FROM hands
+            WHERE user_name = %(user_name)s;""",
+        {
+            "user_name": hand.user_name,
+        },
+    )

@@ -55,11 +55,6 @@ class Card:
     def picture(self):
         return rf"dangerous_ties/{self.id_card}.jpg"
 
-    def looking_police(self, hand):
-        if self.police:
-            self.next_card = hand.police_cards.pop()
-            hand.available_cards.add(self.next_card)
-
     def check(self, hand) -> bool:
         return True
 
@@ -120,12 +115,18 @@ class CardE2(Card):
 class CardP5(Card):
     def check(self, hand) -> bool:
         hand.jail = "p5"
+        hand.available_cards = {
+            _ for _ in hand.available_cards if not _.startswith("c")
+        }
         return True
 
 
 class CardP6(Card):
     def check(self, hand) -> bool:
         hand.jail = "p6"
+        self.next_card = "m1"
+        hand.available_cards = {self.next_card}
+        self.daughters.append(self.next_card)
         return True
 
 
@@ -173,38 +174,42 @@ class CardM7(Card):
         )
         hand.rate -= hand.time_left
         hand.rate -= 10 if hand.jail == "p6" else 0
+        # self.next_card = "m10"
+        # self.daughters.append(self.next_card)
         return True
 
 
 class CardM8(Card):
     def check(self, hand) -> bool:
-        hand.rate += 65
-        hand.rate -= sum(
-            [
-                20
-                for _ in hand.opened_cards
-                if _.startswith("m") and _ not in ("m1", "m3", "m8")
-            ]
-        )
-        hand.rate -= hand.time_left
-        self.next_card = "m10"
-        self.daughters.append(self.next_card)
+        if hand.jail == "p6":
+            hand.rate += 65
+            hand.rate -= sum(
+                [
+                    20
+                    for _ in hand.opened_cards
+                    if _.startswith("m") and _ not in ("m1", "m3", "m8")
+                ]
+            )
+            hand.rate -= hand.time_left
+            # self.next_card = "m10"
+            # self.daughters.append(self.next_card)
         return True
 
 
 class CardM9(Card):
     def check(self, hand) -> bool:
-        hand.rate += 70
-        hand.rate -= sum(
-            [
-                20
-                for _ in hand.opened_cards
-                if _.startswith("m") and _ not in ("m1", "m3", "m9")
-            ]
-        )
-        hand.rate -= hand.time_left
-        self.next_card = "m10"
-        self.daughters.append(self.next_card)
+        if hand.jail == "p6":
+            hand.rate += 70
+            hand.rate -= sum(
+                [
+                    20
+                    for _ in hand.opened_cards
+                    if _.startswith("m") and _ not in ("m1", "m3", "m9")
+                ]
+            )
+            hand.rate -= hand.time_left
+            # self.next_card = "m10"
+            # self.daughters.append(self.next_card)
         return True
 
 

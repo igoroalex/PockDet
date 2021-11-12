@@ -55,10 +55,7 @@ class Hand:
             "rate": 0,
         }
 
-        hand = Hand(pattern_hand)
-        hand.answer(FIRST_CARD)
-
-        return hand
+        return Hand(pattern_hand)
 
     @classmethod
     def old_hand(cls, user_name: str, data_user: dict):
@@ -75,58 +72,60 @@ class Hand:
             "rate": data_user["rate"],
         }
 
-        hand = Hand(pattern_hand)
-
-        return hand
+        return Hand(pattern_hand)
 
     def next_cards(self) -> set:
         return self.available_cards - self.opened_cards
 
     def answer(self, id_card: str) -> Answer:
-        card = Card.get_card(id_card)
+        if not self.available(id_card):
+            return Answer(
+                notice=f"Карта {id_card} не доступна. Эти карты Вы еще не открывали {self.next_cards()}"
+            )
+
+        card: Card = Card.get_card(id_card)
         return self.want_card(card)
 
     def want_card(self, card: Card) -> Answer:
+
+        if self.look_police_help(card):
+            return Answer(notice=f"Вы не можете пользоваться помощью друзей в полиции")
+
         if self.show_opened(card):
             return Answer(picture=card.picture())
-
-        if not self.available(card):
-            return Answer(
-                notice=f"Карта {card.id_card} не доступна. Эти карты Вы еще не открывали {self.next_cards()}"
-            )
 
         if not card.check(self):
             return card.answer
 
-        if self.in_jail(card):
-            return Answer(
-                notice=f"Теперь вы не можете пользоваться помощью друзей в полиции"
-            )
+        answer: Answer = Answer()
 
-        card.looking_police(self)
+        self.looking_police(card)
 
-        answer = Answer()
         self.play(card, answer)
-        if card.next_card:
-            self.play(Card.get_card(card.next_card), answer)
+
+        self.in_jail()
 
         return answer
+
+    def look_police_help(self, card):
+        return self.jail == "p5" and card.id_card.startswith("c")
 
     def show_opened(self, card: Card) -> bool:
         return card.id_card in self.opened_cards
 
-    def available(self, card: Card) -> bool:
-        return card.id_card in self.available_cards
+    def available(self, id_card: str) -> bool:
+        return id_card in self.available_cards
 
-    def in_jail(self, card):
+    def looking_police(self, card: Card):
+        if card.police:
+            card.next_card = self.police_cards.pop()
+            self.available_cards.add(card.next_card)
+
+    def in_jail(self):
         if self.jail == "p5":
             self.available_cards = {
                 _ for _ in self.available_cards if not _.startswith("c")
             }
-
-        if self.jail in ("p5", "p6") and card.id_card.startswith("c"):
-            return True
-        return False
 
     def play(self, card: Card, answer: Answer):
 
@@ -139,3 +138,6 @@ class Hand:
         save_hand(self)
 
         answer.pictures.append(card.picture())
+
+        if card.next_card:
+            self.play(Card.get_card(card.next_card), answer)
