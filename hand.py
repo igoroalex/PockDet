@@ -83,27 +83,24 @@ class Hand:
 
         card = Card.get_card(id_card)
 
-        if self.look_police_help(card):
-            return Answer(notice=f"Вы не можете пользоваться помощью друзей в полиции")
-
         if self.show_opened(card):
             return Answer(picture=card.picture())
+
+        if card.help_police(self):
+            return Answer(notice=f"Вы не можете пользоваться помощью друзей в полиции")
 
         if not card.check(self):
             return card.notice()
 
         answer = Answer()
 
-        self.looking_police(card)
+        self.police_noticed(card)
 
         self.play(card, answer)
 
-        self.in_jail()
+        card.check_jail(self)
 
         return answer
-
-    def look_police_help(self, card):
-        return self.jail == "p5" and card.id_card.startswith("c")
 
     def show_opened(self, card: Card) -> bool:
         return card.id_card in self.opened_cards
@@ -111,18 +108,14 @@ class Hand:
     def available(self, id_card: str) -> bool:
         return id_card in self.available_cards
 
-    def looking_police(self, card: Card):
+    def police_noticed(self, card: Card):
         if card.police:
             card.next_card = self.police_cards.pop()
             self.available_cards.add(card.next_card)
 
-    def in_jail(self):
-        if self.jail == "p5":
-            self.available_cards = {
-                _ for _ in self.available_cards if not _.startswith("c")
-            }
-
     def play(self, card: Card, answer: Answer):
+
+        card.check_jail(self)
 
         self.time_left += card.time
         self.police += card.police

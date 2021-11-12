@@ -58,6 +58,15 @@ class Card:
     def notice(self) -> Answer:
         return Answer(notice="Карта не прошла проверки")
 
+    def help_police(self, hand):
+        return hand.jail == "p5" and self.id_card.startswith("c")
+
+    def check_jail(self, hand):
+        if hand.jail == "p5":
+            self.daughters = [
+                _ for _ in self.daughters if not _.startswith("c")
+            ]
+
 
 class CardS3(Card):
     def check(self, hand) -> bool:
