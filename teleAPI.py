@@ -17,7 +17,6 @@ def id_user(chat):
 
 
 def help_game(update, context):
-
     hand = Hand.get_hand(id_user(update.message.chat))
     update.message.reply_text(f"your next cards: {hand.next_cards()}")
 
@@ -35,46 +34,32 @@ def my_user_name(update, context):
 
 
 def start_game(update, context):
-
     update.message.reply_text("Начнем расследование")
 
-    hand: Hand = Hand.get_hand(id_user(update.message.chat))
-
-    # answer: Answer = hand.answer("i1")
-
-    # show_notice(update, answer) if answer.notice else show_picture(update, answer)
+    hand = Hand.get_hand(id_user(update.message.chat))
     show_answer(update, hand.answer(DECK.first_card()))
 
 
 def restart(update, context):
-
-    hand: Hand = Hand.get_hand(id_user(update.message.chat))
+    hand = Hand.get_hand(id_user(update.message.chat))
     delete_hand(hand)
 
     start(update, context)
 
 
 def time_left(update, context):
-
-    hand: Hand = Hand.get_hand(id_user(update.message.chat))
+    hand = Hand.get_hand(id_user(update.message.chat))
     update.message.reply_text(f"прошло время: {hand.time_left}")
 
 
 def next_cards(update, context):
-
-    hand: Hand = Hand.get_hand(id_user(update.message.chat))
+    hand = Hand.get_hand(id_user(update.message.chat))
     update.message.reply_text(f"your next cards: {hand.next_cards()}")
 
 
 def text(update, context):
-
-    # RegExp
-
-    hand: Hand = Hand.get_hand(id_user(update.message.chat))
-
-    answer: Answer = hand.answer(update.message.text)
-
-    show_answer(update, answer)
+    hand = Hand.get_hand(id_user(update.message.chat))
+    show_answer(update, hand.answer(update.message.text))
 
 
 def show_picture(update, answer: Answer):
