@@ -36,7 +36,7 @@ def error(update, context):
 
 
 def unknown(update, context):
-    reply_text(update, "Sorry, I didn't understand that command.")
+    reply_text(update, "Извини, я очень ограничен в ответах)))")
 
 
 def my_user_name(update, context):
@@ -96,10 +96,7 @@ def reply_text(update, text_answer: str):
     update.message.reply_text(text_answer)
 
 
-def start_tele_bot():
-    updater = Updater(TOKEN, use_context=True)
-    dispatcher = updater.dispatcher
-
+def command_handlers(dispatcher):
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help_game))
     dispatcher.add_handler(CommandHandler("start_game", start_game))
@@ -112,8 +109,13 @@ def start_tele_bot():
     dispatcher.add_handler(MessageHandler(Filters.text, text))
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))
 
+
+def start_tele_bot():
+    updater = Updater(TOKEN, use_context=True)
+    dispatcher = updater.dispatcher
+
+    command_handlers(dispatcher)
     dispatcher.add_error_handler(error)
 
     updater.start_polling()
-
     updater.idle()
