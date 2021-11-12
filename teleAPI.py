@@ -18,7 +18,11 @@ def id_user(chat):
 
 def help_game(update, context):
     hand = Hand.get_hand(id_user(update.message.chat))
-    reply_text(update, f"your next cards: {hand.next_cards()}")
+    reply_text(
+        update, f"/next_cards - доступные НЕ открытые карты: {hand.next_cards()}"
+    )
+    reply_text(update, f"/time_left - прошло время: {hand.time_left}")
+    reply_text(update, f"/m1 - закончить расследование")
 
 
 def error(update, context):
@@ -37,7 +41,12 @@ def start_game(update, context):
     reply_text(update, "Начнем расследование")
 
     hand = Hand.get_hand(id_user(update.message.chat))
-    show_answer(update, hand.answer(DECK.first_card()))
+    show_answer(update, hand.answer(DECK.start_investigation()))
+
+
+def finish_investigation(update, context):
+    hand = Hand.get_hand(id_user(update.message.chat))
+    show_answer(update, hand.answer(DECK.finish_investigation()))
 
 
 def restart(update, context):
@@ -54,7 +63,7 @@ def time_left(update, context):
 
 def next_cards(update, context):
     hand = Hand.get_hand(id_user(update.message.chat))
-    reply_text(update, f"your next cards: {hand.next_cards()}")
+    reply_text(update, f"доступные НЕ открытые карты: {hand.next_cards()}")
 
 
 def text(update, context):
@@ -92,6 +101,7 @@ def start_tele_bot():
     dispatcher.add_handler(CommandHandler("next_cards", next_cards))
     dispatcher.add_handler(CommandHandler("time_left", time_left))
     dispatcher.add_handler(CommandHandler("my_user_name", my_user_name))
+    dispatcher.add_handler(CommandHandler("m1", finish_investigation))
 
     dispatcher.add_handler(MessageHandler(Filters.text, text))
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))

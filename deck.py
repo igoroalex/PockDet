@@ -20,8 +20,12 @@ class Deck:
         return self.__all_cards
 
     @staticmethod
-    def first_card():
+    def start_investigation():
         return "i1"
+
+    @staticmethod
+    def finish_investigation():
+        return "m1"
 
     @staticmethod
     def police_cards():

@@ -44,7 +44,7 @@ class Hand:
         pattern_hand = {
             "user_name": user_name,
             "opened_cards": set(),
-            "available_cards": {DECK.first_card()},
+            "available_cards": {DECK.start_investigation()},
             "time_left": 0,
             "police": 0,
             "police_cards": DECK.police_cards(),
@@ -81,7 +81,7 @@ class Hand:
                 notice=f"Карта {id_card} не доступна. Эти карты Вы еще не открывали {self.next_cards()}"
             )
 
-        card: Card = Card.get_card(id_card)
+        card = Card.get_card(id_card)
 
         if self.look_police_help(card):
             return Answer(notice=f"Вы не можете пользоваться помощью друзей в полиции")
@@ -92,7 +92,7 @@ class Hand:
         if not card.check(self):
             return card.notice()
 
-        answer: Answer = Answer()
+        answer = Answer()
 
         self.looking_police(card)
 
