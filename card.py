@@ -1,9 +1,7 @@
 from typing import List, Final
 import webbrowser
-from deck import Deck
-from teleanswer import Answer
-
-DECK: Final = Deck()
+from deck import DECK
+from teleanswer import AnswerText, AnswerPicture
 
 
 class Card:
@@ -54,26 +52,24 @@ class Card:
     def check(self, hand) -> bool:
         return True
 
-    def notice(self) -> Answer:
-        return Answer(notice="Карта не прошла проверки")
+    def notice(self) -> AnswerText:
+        return AnswerText("Карта не прошла проверки")
 
     def help_police(self, hand):
         return hand.jail == "p5" and self.id_card.startswith("c")
 
     def check_jail(self, hand):
         if hand.jail == "p5":
-            self.daughters = [
-                _ for _ in self.daughters if not _.startswith("c")
-            ]
+            self.daughters = [_ for _ in self.daughters if not _.startswith("c")]
 
 
 class CardS3(Card):
     def check(self, hand) -> bool:
         return hand.time_left <= 2
 
-    def notice(self) -> Answer:
-        return Answer(
-            message="Момент упущен. Полиция уже приехала и не допускает посторонних людей"
+    def notice(self) -> AnswerText:
+        return AnswerText(
+            "Момент упущен. Полиция уже приехала и не допускает посторонних людей"
         )
 
 
@@ -84,16 +80,16 @@ class CardS4(Card):
             return False
         return True
 
-    def notice(self) -> Answer:
-        return Answer(message="Соседи разошлись. не успели(((")
+    def notice(self) -> AnswerText:
+        return AnswerText("Соседи разошлись. не успели(((")
 
 
 class CardC9(Card):
     def check(self, hand) -> bool:
         return hand.last_card == "c8"
 
-    def notice(self) -> Answer:
-        return Answer(message="Возможность подслушать упущена. Не стоило видимо уходить")
+    def notice(self) -> AnswerText:
+        return AnswerText("Возможность подслушать упущена. Не стоило видимо уходить")
 
 
 class CardH2(Card):

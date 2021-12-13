@@ -1,8 +1,9 @@
 import json
 from typing import Set, List
 
-from card import Card, DECK
-from teleanswer import Answer
+from card import Card
+from deck import DECK
+from teleanswer import Answers, AnswerText, AnswerPicture
 from requestsSQL import get_data_hand, save_hand
 
 
@@ -74,34 +75,43 @@ class Hand:
         return Hand(pattern_hand)
 
     def next_cards(self) -> set:
-        return self.available_cards - self.opened_cards
+        return self.available_cards.difference(self.opened_cards)
 
-    def answer(self, id_card: str) -> Answer:
+    def answer(self, id_card: str):
+
+        answers = Answers()
+
         if not self.available(id_card):
-            return Answer(
-                message=f"Карта {id_card} не доступна. Эти карты Вы еще не открывали {self.next_cards()}"
+            answers.add_answer(
+                AnswerText(
+                    f"Карта {id_card} не доступна. Эти карты Вы еще не открывали {self.next_cards()}"
+                )
             )
+            return answers
 
         card = Card.get_card(id_card)
 
         if self.show_opened(card):
-            return Answer(picture=card.picture())
+            answers.add_answer(AnswerPicture(card.picture()))
+            return answers
 
         if card.help_police(self):
-            return Answer(message=f"Вы не можете пользоваться помощью друзей в полиции")
+            answers.add_answer(
+                AnswerText(f"Вы не можете пользоваться помощью друзей в полиции")
+            )
+            return answers
 
         if not card.check(self):
-            return card.notice()
-
-        answer = Answer()
+            answers.add_answer(card.notice())
+            return answers
 
         self.police_noticed(card)
 
-        self.play(card, answer)
+        self.play(card, answers)
 
         card.check_jail(self)
 
-        return answer
+        return answers
 
     def show_opened(self, card: Card) -> bool:
         return card.id_card in self.opened_cards
@@ -114,7 +124,7 @@ class Hand:
             card.next_card = self.police_cards.pop()
             self.available_cards.add(card.next_card)
 
-    def play(self, card: Card, answer: Answer):
+    def play(self, card: Card, answers):
 
         card.check_jail(self)
 
@@ -126,7 +136,7 @@ class Hand:
 
         save_hand(self)
 
-        answer.pictures.append(card.picture())
+        answers.add_answer(card.picture())
 
         if card.next_card:
-            self.play(Card.get_card(card.next_card), answer)
+            self.play(Card.get_card(card.next_card), answers)

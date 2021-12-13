@@ -1,94 +1,19 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from config import TOKEN
-from hand import Hand, DECK
+from deck import DECK
+from hand import Hand
 from requestsSQL import delete_hand
-from teleanswer import Answer
 
 
-def start(update, context):
-    with open("greetings.txt", "r") as f:
-        greetings = f.read()
+def start_tele_bot():
+    updater = Updater(TOKEN, use_context=True)
+    dispatcher = updater.dispatcher
 
-    reply_text(update, greetings)
-    reply_text(update, "/start_game")
+    command_handlers(dispatcher)
+    dispatcher.add_error_handler(error)
 
-
-def id_user(chat):
-    return chat.username if chat.username else str(chat.id)
-
-
-def help_game(update, context):
-    hand = Hand.get_hand(id_user(update.message.chat))
-    reply_text(
-        update, f"/next_cards - доступные НЕ открытые карты: {hand.next_cards()}"
-    )
-    reply_text(update, f"/time_left - прошло время: {hand.time_left}")
-    reply_text(update, f"/m1 - закончить расследование")
-
-
-def error(update, context):
-    reply_text(update, "an error occurred")
-
-
-def unknown(update, context):
-    reply_text(update, "Извини, я очень ограничен в ответах)))")
-
-
-def my_user_name(update, context):
-    reply_text(update, id_user(update.message.chat))
-
-
-def start_game(update, context):
-    reply_text(update, "Начнем расследование")
-
-    hand = Hand.get_hand(id_user(update.message.chat))
-    show_answer(update, hand.answer(DECK.start_investigation()))
-
-
-def finish_investigation(update, context):
-    hand = Hand.get_hand(id_user(update.message.chat))
-    show_answer(update, hand.answer(DECK.finish_investigation()))
-
-
-def restart(update, context):
-    hand = Hand.get_hand(id_user(update.message.chat))
-    delete_hand(hand)
-
-    start(update, context)
-
-
-def time_left(update, context):
-    hand = Hand.get_hand(id_user(update.message.chat))
-    reply_text(update, f"прошло время: {hand.time_left}")
-
-
-def next_cards(update, context):
-    hand = Hand.get_hand(id_user(update.message.chat))
-    reply_text(update, f"доступные НЕ открытые карты: {hand.next_cards()}")
-
-
-def text(update, context):
-    hand = Hand.get_hand(id_user(update.message.chat))
-    show_answer(update, hand.answer(update.message.text))
-
-
-def show_picture(update, pictures: list):
-    for picture in pictures:
-        update.message.reply_photo(open(picture, "rb"))
-
-
-def show_notice(update, answer_message: str):
-    if answer_message:
-        reply_text(update, answer_message)
-
-
-def show_answer(update, answer: Answer):
-    show_picture(update, answer.pictures)
-    show_notice(update, answer.message)
-
-
-def reply_text(update, text_answer: str):
-    update.message.reply_text(text_answer)
+    updater.start_polling()
+    updater.idle()
 
 
 def command_handlers(dispatcher):
@@ -105,12 +30,84 @@ def command_handlers(dispatcher):
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))
 
 
-def start_tele_bot():
-    updater = Updater(TOKEN, use_context=True)
-    dispatcher = updater.dispatcher
+def start(update, context):
+    with open("greetings.txt", "r") as f:
+        greetings = f.read()
 
-    command_handlers(dispatcher)
-    dispatcher.add_error_handler(error)
+    reply_text(update, greetings)
+    reply_text(update, "/start_game")
 
-    updater.start_polling()
-    updater.idle()
+
+def start_game(update, context):
+    reply_text(update, "Начнем расследование")
+
+    hand = Hand.get_hand(id_user(update.message.chat))
+    show_answer(update, hand.answer(DECK.start_investigation()))
+
+
+def restart(update, context):
+    hand = Hand.get_hand(id_user(update.message.chat))
+    delete_hand(hand)
+
+    start(update, context)
+
+
+def help_game(update, context):
+    hand = Hand.get_hand(id_user(update.message.chat))
+    reply_text(
+        update, f"/next_cards - доступные НЕ открытые карты: {hand.next_cards()}"
+    )
+    reply_text(update, f"/time_left - прошло время: {hand.time_left}")
+    reply_text(update, f"/m1 - закончить расследование")
+
+
+def next_cards(update, context):
+    hand = Hand.get_hand(id_user(update.message.chat))
+    reply_text(update, f"доступные НЕ открытые карты: {hand.next_cards()}")
+
+
+def finish_investigation(update, context):
+    hand = Hand.get_hand(id_user(update.message.chat))
+    show_answer(update, hand.answer(DECK.finish_investigation()))
+
+
+def error(update, context):
+    reply_text(update, "an error occurred")
+
+
+def unknown(update, context):
+    reply_text(update, "Извини, я очень ограничен в ответах)))")
+
+
+def text(update, context):
+    hand = Hand.get_hand(id_user(update.message.chat))
+    show_answer(update, hand.answer(update.message.text))
+
+
+def my_user_name(update, context):
+    reply_text(update, id_user(update.message.chat))
+
+
+def id_user(chat):
+    return chat.username if chat.username else str(chat.id)
+
+
+def show_answer(update, answers):
+    for answer in answers.get_answers():
+        if answer.is_picture():
+            reply_picture(update, answer.body)
+        elif answer.is_text():
+            reply_text(update, answer.body)
+
+
+def time_left(update, context):
+    hand = Hand.get_hand(id_user(update.message.chat))
+    reply_text(update, f"прошло время: {hand.time_left}")
+
+
+def reply_text(update, text_answer: str):
+    update.message.reply_text(text_answer)
+
+
+def reply_picture(update, picture_answer: str):
+    update.message.reply_photo(open(picture_answer, "rb"))

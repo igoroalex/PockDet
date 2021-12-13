@@ -1,4 +1,5 @@
 import json
+from typing import Final
 
 
 class Deck:
@@ -30,3 +31,6 @@ class Deck:
     @staticmethod
     def police_cards():
         return ["p6", "p5", "p4", "p3", "p2", "p1"]
+
+
+DECK: Final = Deck()
