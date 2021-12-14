@@ -32,5 +32,8 @@ class Deck:
     def police_cards():
         return ["p6", "p5", "p4", "p3", "p2", "p1"]
 
+    def get_data_card(self, id_card: str):
+        return self.all_cards.get(id_card, {})
+
 
 DECK: Final = Deck()
