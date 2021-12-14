@@ -1,6 +1,6 @@
 class Answers:
-    def __init__(self):
-        self.replies: list = list()
+    def __init__(self, reply=None):
+        self.replies: list = [reply] if reply else list()
 
     def add_answer(self, answer):
         if answer is list:

@@ -136,7 +136,7 @@ class Hand:
 
         save_hand(self)
 
-        answers.add_answer(card.picture())
+        answers.add_answer(AnswerPicture(card.picture()))
 
         if card.next_card:
             self.play(Card.get_card(card.next_card), answers)
