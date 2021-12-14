@@ -118,6 +118,9 @@ class CardF4(Card):
             hand.available_cards.add(self.next_card)
         return True
 
+    def answer(self, hand):
+        return [super().answer(hand), AnswerText(f"прошло время: {hand.time_left}")]
+
 
 class CardE2(Card):
     def check(self, hand) -> bool:
