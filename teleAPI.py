@@ -61,10 +61,16 @@ def help_game(update, context):
 
     answers = Answers()
     answers.add_answer(
-        AnswerText(f"/next_cards - доступные НЕ открытые карты: {hand.next_cards()}")
+        [
+            AnswerText(
+                f"/next_cards - доступные НЕ открытые карты: {hand.next_cards()}"
+            ),
+            AnswerText(f"/time_left - прошло время: {hand.time_left}"),
+            AnswerText(f"/m1 - закончить расследование"),
+        ]
     )
-    answers.add_answer(AnswerText(f"/time_left - прошло время: {hand.time_left}"))
-    answers.add_answer(AnswerText(f"/m1 - закончить расследование"))
+    # answers.add_answer(AnswerText(f"/time_left - прошло время: {hand.time_left}"))
+    # answers.add_answer(AnswerText(f"/m1 - закончить расследование"))
 
     show_answers(update, answers)
 

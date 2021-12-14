@@ -92,7 +92,7 @@ class Hand:
         card = Card.get_card(id_card)
 
         if self.show_opened(card):
-            answers.add_answer(AnswerPicture(card.picture()))
+            answers.add_answer(card.answer(self))
             return answers
 
         if card.help_police(self):
@@ -136,7 +136,7 @@ class Hand:
 
         save_hand(self)
 
-        answers.add_answer(AnswerPicture(card.picture()))
+        answers.add_answer(card.answer(self))
 
         if card.next_card:
             self.play(Card.get_card(card.next_card), answers)

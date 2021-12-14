@@ -3,7 +3,7 @@ class Answers:
         self.replies: list = [reply] if reply else list()
 
     def add_answer(self, answer):
-        if answer is list:
+        if isinstance(answer, list):
             self.replies.extend(answer)
         else:
             self.replies.append(answer)

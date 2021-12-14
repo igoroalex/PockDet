@@ -1,4 +1,4 @@
-from typing import List, Final
+from typing import List
 import webbrowser
 from deck import DECK
 from teleanswer import AnswerText, AnswerPicture
@@ -23,6 +23,7 @@ class Card:
     def get_card(id_card: str):
         """Get card by id, but exists especial conditions for some cards"""
         special_cards = {
+            "s2": CardS2,
             "s3": CardS3,
             "s4": CardS4,
             "c9": CardC9,
@@ -46,6 +47,9 @@ class Card:
     def show_card(self):
         webbrowser.open(self.picture())
 
+    def answer(self, hand):
+        return AnswerPicture(self.picture())
+
     def picture(self):
         return rf"{DECK.name}/{self.id_card}.jpg"
 
@@ -61,6 +65,11 @@ class Card:
     def check_jail(self, hand):
         if hand.jail == "p5":
             self.daughters = [_ for _ in self.daughters if not _.startswith("c")]
+
+
+class CardS2(Card):
+    def answer(self, hand):
+        return [super().answer(hand), AnswerText(f"прошло время: {hand.time_left}")]
 
 
 class CardS3(Card):
@@ -97,6 +106,9 @@ class CardH2(Card):
         if hand.time_left <= 4:
             self.police = 0
         return True
+
+    def answer(self, hand):
+        return [super().answer(hand), AnswerText(f"прошло время: {hand.time_left}")]
 
 
 class CardF4(Card):
