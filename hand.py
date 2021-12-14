@@ -104,7 +104,7 @@ class Hand:
             return answers
 
         if not card.check(self):
-            answers.add_answer(card.notice())
+            answers.add_answer(card.notice(self))
             return answers
 
         self.police_noticed(card)

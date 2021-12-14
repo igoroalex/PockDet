@@ -29,6 +29,7 @@ class Card:
             "c9": CardC9,
             "h2": CardH2,
             "f4": CardF4,
+            "f6": CardF6,
             "e2": CardE2,
             "p5": CardP5,
             "p6": CardP6,
@@ -56,7 +57,7 @@ class Card:
     def check(self, hand) -> bool:
         return True
 
-    def notice(self) -> AnswerText:
+    def notice(self, hand):
         return AnswerText("Карта не прошла проверки")
 
     def help_police(self, hand):
@@ -76,7 +77,7 @@ class CardS3(Card):
     def check(self, hand) -> bool:
         return hand.time_left <= 2
 
-    def notice(self) -> AnswerText:
+    def notice(self, hand):
         return AnswerText(
             "Момент упущен. Полиция уже приехала и не допускает посторонних людей"
         )
@@ -89,7 +90,7 @@ class CardS4(Card):
             return False
         return True
 
-    def notice(self) -> AnswerText:
+    def notice(self, hand):
         return AnswerText("Соседи разошлись. не успели(((")
 
 
@@ -97,7 +98,7 @@ class CardC9(Card):
     def check(self, hand) -> bool:
         return hand.last_card == "c8"
 
-    def notice(self) -> AnswerText:
+    def notice(self, hand):
         return AnswerText("Возможность подслушать упущена. Не стоило видимо уходить")
 
 
@@ -115,8 +116,24 @@ class CardF4(Card):
     def check(self, hand) -> bool:
         if (14 <= hand.time_left <= 22) or (38 <= hand.time_left <= 46):
             self.next_card = "f6"
-            hand.available_cards.add(self.next_card)
+
+        hand.available_cards.add(self.next_card)
         return True
+
+    def answer(self, hand):
+        return [super().answer(hand), AnswerText(f"прошло время: {hand.time_left}")]
+
+
+class CardF6(Card):
+    def check(self, hand) -> bool:
+        return (14 <= hand.time_left <= 22) or (38 <= hand.time_left <= 46)
+
+    def notice(self, hand):
+        return [
+            hand.find_parent("f6"),
+            AnswerText(f"прошло время: {hand.time_left}"),
+            AnswerText("Офис временно не доступен"),
+        ]
 
     def answer(self, hand):
         return [super().answer(hand), AnswerText(f"прошло время: {hand.time_left}")]
