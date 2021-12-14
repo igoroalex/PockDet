@@ -25,6 +25,7 @@ def command_handlers(dispatcher):
     dispatcher.add_handler(CommandHandler("next_cards", next_cards))
     dispatcher.add_handler(CommandHandler("time_left", time_left))
     dispatcher.add_handler(CommandHandler("my_user_name", my_user_name))
+    dispatcher.add_handler(CommandHandler("find_parent", find_parent))
     dispatcher.add_handler(CommandHandler("m1", finish_investigation))
 
     dispatcher.add_handler(MessageHandler(Filters.text, text))
@@ -36,8 +37,7 @@ def start(update, context):
         greetings = f.read()
 
     answers = Answers()
-    answers.add_answer(AnswerText(greetings))
-    answers.add_answer(AnswerText("/start_game"))
+    answers.add_answer([AnswerText(greetings), AnswerText("/start_game")])
 
     show_answers(update, answers)
 
@@ -69,8 +69,6 @@ def help_game(update, context):
             AnswerText(f"/m1 - закончить расследование"),
         ]
     )
-    # answers.add_answer(AnswerText(f"/time_left - прошло время: {hand.time_left}"))
-    # answers.add_answer(AnswerText(f"/m1 - закончить расследование"))
 
     show_answers(update, answers)
 
@@ -80,6 +78,13 @@ def next_cards(update, context):
     show_answers(
         update, Answers(AnswerText(f"доступные НЕ открытые карты: {hand.next_cards()}"))
     )
+    print(update.message.text)
+
+
+def find_parent(update, context):
+    hand = Hand.get_hand(id_user(update.message.chat))
+    id_card = update.message.text.replace("/find_parent", "")
+    show_answers(update, hand.find_parent(id_card))
 
 
 def finish_investigation(update, context):

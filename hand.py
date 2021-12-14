@@ -3,7 +3,7 @@ from typing import Set, List
 
 from card import Card
 from deck import DECK
-from teleanswer import Answers, AnswerText, AnswerPicture
+from teleanswer import Answers, AnswerText
 from requestsSQL import get_data_hand, save_hand
 
 
@@ -79,6 +79,8 @@ class Hand:
 
     def answer(self, id_card: str):
 
+        id_card = id_card.lower().strip()
+
         answers = Answers()
 
         if not self.available(id_card):
@@ -140,3 +142,14 @@ class Hand:
 
         if card.next_card:
             self.play(Card.get_card(card.next_card), answers)
+
+    def find_parent(self, id_card: str):
+        id_card = id_card.lower().strip()
+
+        for id_parent in self.available_cards:
+            data_parent = DECK.all_cards.get(id_parent, {})
+
+            if id_card in data_parent.get("daughters", []):
+                return self.answer(data_parent.get("id_card", ""))
+
+        return self.answer(id_card)
