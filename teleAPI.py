@@ -94,6 +94,11 @@ def text(update, context):
     show_answers(update, hand.answer(update.message.text))
 
 
+def time_left(update, context):
+    hand = Hand.get_hand(id_user(update.message.chat))
+    show_answers(update, Answers(AnswerText(f"прошло время: {hand.time_left}")))
+
+
 def my_user_name(update, context):
     show_answers(update, Answers(AnswerText(id_user(update.message.chat))))
 
@@ -108,11 +113,6 @@ def show_answers(update, answers):
             reply_picture(update, answer.body)
         elif answer.is_text():
             reply_text(update, answer.body)
-
-
-def time_left(update, context):
-    hand = Hand.get_hand(id_user(update.message.chat))
-    show_answers(update, Answers(AnswerText(f"прошло время: {hand.time_left}")))
 
 
 def reply_text(update, text_answer: str):
