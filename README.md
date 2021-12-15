@@ -22,3 +22,5 @@ LINK: str = "t.me/QuarantinedDetectiveBot"
 
 Future improvements:
  - environment variables
+ - pictures links on webserver
+ - made Docker
