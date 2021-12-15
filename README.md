@@ -15,3 +15,10 @@ used Python 3.9, psycopg (https://www.psycopg.org/psycopg3/docs/basic/install.ht
 example config.py:
 
 CONNINFO: str = "postgresql://user_1:XXXXXXX@localhost:5432/test1"
+
+TOKEN: str = "XXXXXXXXXXX:XXXXXXXXXXXXXXXXXXXX"
+
+LINK: str = "t.me/QuarantinedDetectiveBot"
+
+Future improvements:
+ - environment variables
