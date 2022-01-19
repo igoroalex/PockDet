@@ -8,7 +8,7 @@ class Card:
     """Initialization of card from deck with all info and check conditions via hand"""
 
     def __init__(self, id_card: str):
-        data_card = DECK.get_data_card(id_card)
+        data_card = DECK.card(id_card)
 
         self.id_card: str = data_card.get("id_card", "")
         self.time: int = data_card.get("time", 0)

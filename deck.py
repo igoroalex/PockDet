@@ -3,8 +3,8 @@ from typing import Final
 
 
 class Deck:
-    """при инициализации программы (не сессии)
-    записать данные всех карт из json в базу данных"""
+    """at program initialization (not session)
+    write data of all maps from json to memory"""
 
     def __init__(self):
         self.name = "dangerous_ties"
@@ -32,7 +32,7 @@ class Deck:
     def police_cards():
         return ["p6", "p5", "p4", "p3", "p2", "p1"]
 
-    def get_data_card(self, id_card: str):
+    def card(self, id_card: str):
         return self.__all_cards.get(id_card, {})
 
 
