@@ -43,6 +43,7 @@ class Hand:
 
     @staticmethod
     def zero_hand(user_name: str):
+        """nullify the hand"""
         pattern_hand = {
             "user_name": user_name,
             "opened_cards": set(),
@@ -59,7 +60,7 @@ class Hand:
 
     @staticmethod
     def old_hand(user_name: str, data_user: dict):
-
+        """the hand is already in the database"""
         pattern_hand = {
             "user_name": user_name,
             "opened_cards": set(json.loads(data_user["opened_cards"])),
@@ -144,6 +145,7 @@ class Hand:
             self.play(Card.get_card(card.next_card), answers)
 
     def find_parent(self, id_card: str):
+        """find the card that led to the desired"""
         id_card = id_card.lower().strip()
 
         for id_parent in self.available_cards:
