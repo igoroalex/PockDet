@@ -82,6 +82,7 @@ def next_cards(update, context):
 
 
 def find_parent(update, context):
+    """find the card that led to the desired"""
     hand = Hand.get_hand(id_user(update.message.chat))
     id_card = update.message.text.replace("/find_parent", "")
     show_answers(update, hand.find_parent(id_card))
