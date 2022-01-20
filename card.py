@@ -214,6 +214,9 @@ class CardM7(Card):
         # self.daughters.append(self.next_card)
         return True
 
+    def answer(self, hand):
+        return [super().answer(hand), AnswerText(f"прошло время: {hand.time_left}")]
+
 
 class CardM8(Card):
     def check(self, hand) -> bool:

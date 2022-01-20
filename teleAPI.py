@@ -66,6 +66,7 @@ def help_game(update, context):
                 f"/next_cards - доступные НЕ открытые карты: {hand.next_cards()}"
             ),
             AnswerText(f"/time_left - прошло время: {hand.time_left}"),
+            AnswerText(f"/find_parent xx - найти карту, которая привела к карте хх"),
             AnswerText(f"/m1 - закончить расследование"),
         ]
     )
