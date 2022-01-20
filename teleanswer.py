@@ -22,6 +22,9 @@ class Answer:
     def is_picture(self):
         return False
 
+    def is_button(self):
+        return False
+
 
 class AnswerText(Answer):
     def is_text(self):
@@ -30,4 +33,9 @@ class AnswerText(Answer):
 
 class AnswerPicture(Answer):
     def is_picture(self):
+        return True
+
+
+class AnswerButton(Answer):
+    def is_button(self):
         return True

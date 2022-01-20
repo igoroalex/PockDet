@@ -124,6 +124,8 @@ def show_answers(update, answers):
     for answer in answers.get_answers():
         if answer.is_picture():
             reply_picture(update, answer.body)
+        elif answer.is_button():
+            reply_text(update, answer.body)
         elif answer.is_text():
             reply_text(update, answer.body)
 
