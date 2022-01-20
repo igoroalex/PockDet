@@ -1,4 +1,11 @@
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import (
+    Updater,
+    CommandHandler,
+    MessageHandler,
+    Filters,
+    CallbackQueryHandler,
+)
 from config import TOKEN
 from deck import DECK
 from hand import Hand
@@ -30,6 +37,8 @@ def command_handlers(dispatcher):
 
     dispatcher.add_handler(MessageHandler(Filters.text, text))
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))
+
+    dispatcher.add_handler(CallbackQueryHandler(button))
 
 
 def start(update, context):
@@ -72,6 +81,7 @@ def help_game(update, context):
     )
 
     show_answers(update, answers)
+    show_buttons(update)
 
 
 def next_cards(update, context):
@@ -136,3 +146,44 @@ def reply_text(update, text_answer: str):
 
 def reply_picture(update, picture_answer: str):
     update.message.reply_photo(open(picture_answer, "rb"))
+
+
+def build_menu(buttons, n_cols, header_buttons=None, footer_buttons=None):
+    menu = [buttons[i : i + n_cols] for i in range(0, len(buttons), n_cols)]
+    if header_buttons:
+        menu.insert(0, [header_buttons])
+    if footer_buttons:
+        menu.append([footer_buttons])
+    return menu
+
+
+def show_buttons(update):
+    # список кнопок
+    keyboard = [
+        [
+            InlineKeyboardButton("Option 1", callback_data="1"),
+            InlineKeyboardButton("Option 2", callback_data="2"),
+        ],
+        [InlineKeyboardButton("Option 3", callback_data="3")],
+    ]
+
+    # сборка клавиатуры из кнопок `InlineKeyboardButton`
+    # reply_markup = InlineKeyboardMarkup(build_menu(keyboard, n_cols=2))
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    # отправка клавиатуры в чат
+    update.message.reply_text("Пожалуйста, выберите:", reply_markup=reply_markup)
+
+
+def button(update, _):
+    query = update.callback_query
+    variant = query.data
+
+    # `CallbackQueries` требует ответа, даже если
+    # уведомление для пользователя не требуется, в противном
+    #  случае у некоторых клиентов могут возникнуть проблемы.
+    # смотри https://core.telegram.org/bots/api#callbackquery.
+    query.answer()
+    # редактируем сообщение, тем самым кнопки
+    # в чате заменятся на этот ответ.
+    query.edit_message_text(text=f"Выбранный вариант: {variant}")
+
