@@ -1,3 +1,5 @@
+import logging
+
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Updater,
@@ -12,33 +14,46 @@ from hand import Hand
 from requestsSQL import delete_hand
 from teleanswer import Answers, AnswerText
 
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger()
+
 
 def start_tele_bot():
     updater = Updater(TOKEN, use_context=True)
     dispatcher = updater.dispatcher
 
-    command_handlers(dispatcher)
+    set_handlers(dispatcher)
     dispatcher.add_error_handler(error)
 
     updater.start_polling()
     updater.idle()
 
 
-def command_handlers(dispatcher):
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("help", help_game))
-    dispatcher.add_handler(CommandHandler("start_game", start_game))
-    dispatcher.add_handler(CommandHandler("zero_hand", restart))
-    dispatcher.add_handler(CommandHandler("next_cards", next_cards))
-    dispatcher.add_handler(CommandHandler("time_left", time_left))
-    dispatcher.add_handler(CommandHandler("my_user_name", my_user_name))
-    dispatcher.add_handler(CommandHandler("find_parent", find_parent))
-    dispatcher.add_handler(CommandHandler("m1", finish_investigation))
+def set_handlers(dispatcher):
+    command_handlers = {
+        "start": start,
+        "help": help_game,
+        "start_game": start_game,
+        "zero_hand": restart,
+        "next_cards": next_cards,
+        "time_left": time_left,
+        "my_user_name": my_user_name,
+        "find_parent": find_parent,
+        "m1": finish_investigation,
+    }
+    add_handlers(dispatcher, command_handlers)
 
     dispatcher.add_handler(MessageHandler(Filters.text, text))
     dispatcher.add_handler(MessageHandler(Filters.command, unknown))
 
     dispatcher.add_handler(CallbackQueryHandler(button))
+
+
+def add_handlers(dispatcher, command_handlers):
+    for command, callback in command_handlers.items():
+        dispatcher.add_handler(CommandHandler(command, callback))
 
 
 def start(update, context):
@@ -177,13 +192,6 @@ def show_buttons(update):
 def button(update, _):
     query = update.callback_query
     variant = query.data
-
-    # `CallbackQueries` требует ответа, даже если
-    # уведомление для пользователя не требуется, в противном
-    #  случае у некоторых клиентов могут возникнуть проблемы.
-    # смотри https://core.telegram.org/bots/api#callbackquery.
     query.answer()
-    # редактируем сообщение, тем самым кнопки
-    # в чате заменятся на этот ответ.
-    query.edit_message_text(text=f"Выбранный вариант: {variant}")
-
+    # query.edit_message_text(text=f"s1")
+    query.edit_message_text(text=f"{str(query)}")
